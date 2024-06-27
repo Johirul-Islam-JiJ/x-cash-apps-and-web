@@ -41,8 +41,11 @@ class RegisterController extends Controller
         $this->middleware('registration.status')->except('registrationNotAllowed');
     }
 
-    public function showRegistrationForm()
+    public function showRegistrationForm($reference = null)
     {
+        if ($reference) {
+            session()->put('reference', $reference);
+        }
         $pageTitle = "Register";
         $info = json_decode(json_encode(getIpInfo()), true);
         $mobileCode = @implode(',', $info['code']);
@@ -141,7 +144,7 @@ class RegisterController extends Controller
         $user = new User();
 
         $user->company_name = isset($data['company_name']) ? $data['company_name'] : null;
-        
+
         $user->email = strtolower($data['email']);
         $user->password = Hash::make($data['password']);
         $user->username = $data['username'];
@@ -208,7 +211,7 @@ class RegisterController extends Controller
     public function checkUser(Request $request){
         $exist['data'] = false;
         $exist['type'] = null;
-        
+
         if ($request->email) {
             $exist['data'] = User::where('email',$request->email)->exists();
             $exist['type'] = 'email';
@@ -225,7 +228,7 @@ class RegisterController extends Controller
     }
 
     public function registered(Request $request,$user){
-        
+
         foreach(Currency::enable()->get(['id', 'currency_code']) as $currency){
             $exist = auth()->user()->wallets()->where('currency_id', $currency->id)->exists();
             if(!$exist){

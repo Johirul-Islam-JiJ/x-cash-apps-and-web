@@ -1,6 +1,5 @@
 @extends($activeTemplate . 'layouts.user_master')
 @section('content')
-
     <div class="col-lg-9 mt-lg-0 mt-5">
         @if ($user->kv == 0 || $user->kv == 2)
             <div class="d-user-notification d-flex flex-wrap align-items-center mb-4 {{ @$kyc['bgColor'] }}">
@@ -15,7 +14,14 @@
                 </div>
             </div>
         @endif
-
+        <div class="col-12 mb-3">
+            <h6 class="mb-3">@lang('Referral Link')</h6>
+            <div class="input-group mb-0">
+                <input type="text" value="{{ route('user.register', [auth()->user()->username]) }}"
+                    class="form-control value-to-copy" readonly>
+                <span class="input-group-text" type="button" id="copyBoard"> <i class="fa fa-copy"></i> </span>
+            </div>
+        </div>
         <div class="push_notice"></div>
 
         <div class="d-lg-flex d-none justify-content-between">
@@ -24,6 +30,7 @@
                 <i class="las la-long-arrow-alt-right"></i>
             </a>
         </div>
+
         <div class="row mb-5 gy-4 d-lg-flex d-none">
             @foreach ($wallets as $wallet)
                 <div class="col-lg-4 col-md-6">
@@ -31,13 +38,14 @@
                         <div class="d-widget__content">
                             <i class="las la-wallet"></i>
                             <h2 class="d-widget__amount fw-normal amount__responsive">
-                                {{ $wallet->currency->currency_symbol }}{{ showAmount($wallet->balance, $wallet->currency) }} 
+                                {{ $wallet->currency->currency_symbol }}{{ showAmount($wallet->balance, $wallet->currency) }}
                                 {{ $wallet->currency->currency_code }}
                             </h2>
-                        </div> 
+                        </div>
                         @if (module('transfer_money', $module)->status)
                             <div class="d-widget__footer d-flex flex-wrap justify-content-between">
-                                <a href="{{ route('user.transfer', ['wallet'=>$wallet->currency->currency_code]) }}" class="font-size--14px">
+                                <a href="{{ route('user.transfer', ['wallet' => $wallet->currency->currency_code]) }}"
+                                    class="font-size--14px">
                                     @lang('Transfer Money')<i class="las la-long-arrow-alt-right"></i>
                                 </a>
                             </div>
@@ -59,8 +67,8 @@
                 </div><!-- row end -->
             </div>
         </div><!-- custom--card end -->
-       
-        <div class="card custom--card border-0"> 
+
+        <div class="card custom--card border-0">
             <div class="card-header border">
                 <div class="row align-items-center">
                     <div class="col-8 py-3">
@@ -69,9 +77,11 @@
                 </div>
             </div>
             <div class="card-body p-0">
+
                 <div class="accordion table--acordion" id="transactionAccordion">
                     @forelse ($histories as $history)
-                        <div class="accordion-item transaction-item {{ $history->trx_type == '-' ? 'sent-item' : 'rcv-item' }}">
+                        <div
+                            class="accordion-item transaction-item {{ $history->trx_type == '-' ? 'sent-item' : 'rcv-item' }}">
                             <h2 class="accordion-header" id="h-{{ $loop->iteration }}">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#c-{{ $loop->iteration }}" aria-expanded="false" aria-controls="c-1">
@@ -84,18 +94,21 @@
                                                 <h6 class="trans-title">
                                                     {{ __(ucwords(str_replace('_', ' ', $history->remark))) }}
                                                 </h6>
-                                                <span class="text-muted font-size--14px mt-2">{{ showDateTime($history->created_at, 'M d Y @g:i:a') }}</span>
+                                                <span
+                                                    class="text-muted font-size--14px mt-2">{{ showDateTime($history->created_at, 'M d Y @g:i:a') }}</span>
                                             </div>
                                         </div>
-                                    </div> 
+                                    </div>
                                     <div class="col-lg-6 col-sm-5 col-12 order-sm-2 order-3 content-wrapper mt-sm-0 mt-3">
                                         <p class="text-muted font-size--14px">
-                                            <b>{{ __($history->details) }} {{ $history->receiver ? @$history->receiver->username : '' }}</b>
-                                            </p>
+                                            <b>{{ __($history->details) }}
+                                                {{ $history->receiver ? @$history->receiver->username : '' }}</b>
+                                        </p>
                                     </div>
                                     <div class="col-lg-3 col-sm-3 col-6 order-sm-3 order-2 text-end amount-wrapper">
                                         <p>
-                                            <b>{{ showAmount($history->amount, $history->currency) }} {{ $history->currency->currency_code }}</b>
+                                            <b>{{ showAmount($history->amount, $history->currency) }}
+                                                {{ $history->currency->currency_code }}</b>
                                         </p>
                                     </div>
                                 </button>
@@ -116,14 +129,16 @@
                                         @if ($history->charge > 0)
                                             <li>
                                                 <span class="caption">@lang('Before Charge')</span>
-                                                <span class="value">{{ showAmount($history->before_charge, $history->currency) }}
+                                                <span
+                                                    class="value">{{ showAmount($history->before_charge, $history->currency) }}
                                                     {{ $history->currency->currency_code }}
                                                 </span>
                                             </li>
 
                                             <li>
                                                 <span class="caption">@lang('Charge')</span>
-                                                <span class="value">{{ $history->charge_type }}{{ showAmount($history->charge, $history->currency) }}
+                                                <span
+                                                    class="value">{{ $history->charge_type }}{{ showAmount($history->charge, $history->currency) }}
                                                     {{ $history->currency->currency_code }}
                                                 </span>
                                             </li>
@@ -137,7 +152,8 @@
                                         </li>
                                         <li>
                                             <span class="caption">@lang('Remaining Balance')</span>
-                                            <span class="value">{{ showAmount($history->post_balance, $history->currency) }}
+                                            <span
+                                                class="value">{{ showAmount($history->post_balance, $history->currency) }}
                                                 {{ $history->currency->currency_code }}
                                             </span>
                                         </li>
@@ -182,6 +198,23 @@
             $('.reason').on('click', function() {
                 $('#reasonModal').find('.reason').text($(this).data('reasons'))
                 $('#reasonModal').modal('show')
+            });
+        })(jQuery);
+    </script>
+
+    <script>
+        (function($) {
+            "use strict";
+            $('#copyBoard').click(function() {
+                var copyText = document.getElementsByClassName("value-to-copy");
+                copyText = copyText[0];
+                copyText.select();
+                copyText.setSelectionRange(0, 99999);
+                /*For mobile devices*/
+                document.execCommand("copy");
+                copyText.blur();
+                this.classList.add('copied');
+                setTimeout(() => this.classList.remove('copied'), 1500);
             });
         })(jQuery);
     </script>

@@ -11,7 +11,7 @@ Route::namespace('User\Auth')->name('user.')->group(function () {
     });
 
     Route::controller('RegisterController')->group(function(){
-        Route::get('register', 'showRegistrationForm')->name('register');
+        Route::get('register/{reference?}', 'showRegistrationForm')->name('register');
         Route::post('register', 'register')->middleware('registration.status');
         Route::post('check-mail', 'checkUser')->name('checkUser');
     });
@@ -27,7 +27,7 @@ Route::namespace('User\Auth')->name('user.')->group(function () {
         Route::post('password/reset', 'reset')->name('password.update');
         Route::get('password/reset/{token}', 'showResetForm')->name('password.reset');
     });
-}); 
+});
 
 Route::middleware('auth')->name('user.')->group(function () {
     //authorization
@@ -38,7 +38,7 @@ Route::middleware('auth')->name('user.')->group(function () {
         Route::post('verify-mobile', 'mobileVerification')->name('verify.mobile');
         Route::post('verify-g2fa', 'g2faVerification')->name('go2fa.verify');
     });
-  
+
     Route::middleware(['check.status'])->group(function () {
 
         Route::get('user-data', 'User\UserController@userData')->name('data');
@@ -99,7 +99,7 @@ Route::middleware('auth')->name('user.')->group(function () {
 
                     Route::get('/done', 'withdrawSubmitDone')->name('.submit.done');
                 });
-                
+
                 Route::get('/history', 'withdrawLog')->name('.history');
                 Route::get('/file-download/{fileHash}', 'fileDownload')->name('.file.download');
             });
@@ -130,7 +130,7 @@ Route::middleware('auth')->name('user.')->group(function () {
 
             //More Wallets
             Route::get('/wallets', 'UserController@wallets')->name('wallets');
-  
+
             //Request Money
             Route::controller('UserOperationController')->middleware('module:request_money')->group(function(){
                 Route::get('/requests', 'allRequests')->name('requests');
