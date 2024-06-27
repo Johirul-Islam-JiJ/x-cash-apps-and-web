@@ -1,0 +1,1 @@
+ALTER TABLE `user_actions` ADD `used` TINYINT(1) NOT NULL DEFAULT '0' AFTER `id`, ADD `is_api` TINYINT(1) NOT NULL DEFAULT '0' AFTER `used`;
