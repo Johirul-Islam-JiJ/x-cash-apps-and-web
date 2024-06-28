@@ -9,20 +9,24 @@ use App\Models\Agent;
 use App\Models\Currency;
 use App\Models\Deposit;
 use App\Models\GatewayCurrency;
+use App\Models\GeneralSetting;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PaymentController extends Controller{
+class PaymentController extends Controller
+{
 
-    public function deposit(){ 
+    public function deposit()
+    {
         $pageTitle = 'Payment Methods';
         return view($this->activeTemplate . gatewayView('deposit'), compact('pageTitle'));
     }
 
-    public function depositInsert(Request $request){
+    public function depositInsert(Request $request)
+    {
 
         $request->validate([
             'amount' => 'required|numeric|gt:0',
@@ -32,8 +36,8 @@ class PaymentController extends Controller{
 
         $user = userGuard()['user'];
         $currency = Currency::enable()->find($request->currency_id);
-        
-        if(!$currency) {
+
+        if (!$currency) {
             $notify[] = ['error', 'Invalid currency'];
             return back()->withNotify($notify);
         }
@@ -46,7 +50,7 @@ class PaymentController extends Controller{
             $notify[] = ['error', 'Invalid gateway'];
             return back()->withNotify($notify);
         }
-        
+
         if ($gate->min_amount / $currency->rate > $request->amount || $gate->max_amount / $currency->rate < $request->amount) {
             $notify[] = ['error', 'Please follow deposit limit'];
             return back()->withNotify($notify);
@@ -57,7 +61,18 @@ class PaymentController extends Controller{
         $final_amo = $payable;
         $data = new Deposit();
         $data->user_id = $user->id;
-
+        if ($user && $user->getReferBy && $user->getReferBy->username && $user->bonus_status == 0) {
+            $bonus = GeneralSetting::first();
+            $data->bonus_user = ($bonus->bonus_amount * $request->amount) / 100;
+            $data->bonus_refer_by = ($bonus->bonus_amount * $request->amount) / 100;
+            $data->final_amo = $final_amo + ($bonus->bonus_amount * $request->amount) / 100;
+            $user->bonus_status = 1;
+            $user->save();
+        } else {
+            $data->bonus_user = 0;
+            $data->bonus_refer_by = 0;
+            $data->final_amo = $final_amo;
+        }
         $data->user_type = userGuard()['type'];
         $data->wallet_id = $request->wallet_id;
         $data->currency_id = $request->currency_id;
@@ -74,41 +89,40 @@ class PaymentController extends Controller{
         $data->save();
 
         session()->put('Track', $data->trx);
-        return to_route(strtolower(userGuard()['type']).'.deposit.confirm');
-    } 
+        return to_route(strtolower(userGuard()['type']) . '.deposit.confirm');
+    }
 
     public function appDepositConfirm($hash)
-    {  
+    {
         try {
             $id = decrypt($hash);
         } catch (\Exception $ex) {
             return "Sorry, invalid URL.";
         }
-   
+
         $data = Deposit::where('id', $id)->where('status', 0)->orderBy('id', 'DESC')->firstOrFail();
 
-        if($data->user_type == 'USER'){
+        if ($data->user_type == 'USER') {
             $user = User::findOrFail($data->user_id);
             Auth::login($user);
             logoutAnother('user');
-        }
-        elseif($data->user_type == 'AGENT'){
+        } elseif ($data->user_type == 'AGENT') {
             $user = Agent::findOrFail($data->user_id);
             Auth::guard('agent')->login($user);
             logoutAnother('agent');
         }
 
         session()->put('Track', $data->trx);
-        return to_route(strtolower(userGuard()['type']).'.deposit.confirm');
+        return to_route(strtolower(userGuard()['type']) . '.deposit.confirm');
     }
 
     public function depositConfirm()
-    {   
+    {
         $track = session()->get('Track');
-        $deposit = Deposit::where('trx', $track)->where('status',0)->orderBy('id', 'DESC')->with('gateway')->firstOrFail();
+        $deposit = Deposit::where('trx', $track)->where('status', 0)->orderBy('id', 'DESC')->with('gateway')->firstOrFail();
 
         if ($deposit->method_code >= 1000) {
-            return to_route(strtolower(userGuard()['type']).'.deposit.manual.confirm');
+            return to_route(strtolower(userGuard()['type']) . '.deposit.manual.confirm');
         }
 
 
@@ -128,7 +142,7 @@ class PaymentController extends Controller{
         }
 
         // for Stripe V3
-        if(@$data->session){
+        if (@$data->session) {
             $deposit->btc_wallet = $data->session->id;
             $deposit->save();
         }
@@ -137,25 +151,28 @@ class PaymentController extends Controller{
         return view($this->activeTemplate . $data->view, compact('data', 'pageTitle', 'deposit'));
     }
 
-    public static function userDataUpdate($deposit,$isManual = null)
-    { 
+    public static function userDataUpdate($deposit, $isManual = null)
+    {
         if ($deposit->status == 0 || $deposit->status == 2) {
             $deposit->status = 1;
             $deposit->save();
-        
-            if($deposit->user_type == 'USER'){
+
+            if ($deposit->user_type == 'USER') {
                 $user = User::find($deposit->user_id);
                 $userType = 'USER';
-            }
-            elseif($deposit->user_type == 'AGENT'){   
+            } elseif ($deposit->user_type == 'AGENT') {
                 $user = Agent::find($deposit->user_id);
                 $userType = 'AGENT';
             }
-        
+
             $userWallet = Wallet::find($deposit->wallet_id);
-            $userWallet->balance += $deposit->amount;
+            $userWallet->balance += $deposit->amount + $deposit->bonus_user;
             $userWallet->save();
-             
+            if ($user && $user->getReferBy && $user->getReferBy->username) {
+                $userReferWallet = Wallet::find($user->getReferBy->id);
+                $userReferWallet->balance += $deposit->bonus_refer_by;
+                $userReferWallet->save();
+            }
             $transaction = new Transaction();
             $transaction->user_id = $user->id;
 
@@ -177,7 +194,7 @@ class PaymentController extends Controller{
                 $adminNotification = new AdminNotification();
                 $adminNotification->user_type = $userType;
                 $adminNotification->user_id = $user->id;
-                $adminNotification->title = 'Deposit successful via '.$deposit->gatewayCurrency()->name;
+                $adminNotification->title = 'Deposit successful via ' . $deposit->gatewayCurrency()->name;
                 $adminNotification->click_url = urlPath('admin.deposit.successful');
                 $adminNotification->save();
             }
@@ -193,7 +210,6 @@ class PaymentController extends Controller{
                 'trx' => $deposit->trx,
                 'post_balance' => showAmount($userWallet->balance, $deposit->currency)
             ]);
-
         }
     }
 
@@ -210,7 +226,7 @@ class PaymentController extends Controller{
             $pageTitle = 'Deposit Confirm';
             $method = $data->gatewayCurrency();
             $gateway = $method->method;
-            return view($this->activeTemplate . gatewayView('manual_confirm',true), compact('data', 'pageTitle', 'method', 'gateway'));
+            return view($this->activeTemplate . gatewayView('manual_confirm', true), compact('data', 'pageTitle', 'method', 'gateway'));
         }
 
         abort(404);
@@ -222,11 +238,10 @@ class PaymentController extends Controller{
         $data = Deposit::with('gateway')->where('status', 0)->where('trx', $track)->first();
         $userType = null;
 
-        if($data->user_type == 'USER'){
+        if ($data->user_type == 'USER') {
             $user = User::find($data->user_id);
             $userType = 'USER';
-        }
-        elseif($data->user_type == 'AGENT'){
+        } elseif ($data->user_type == 'AGENT') {
             $user = Agent::find($data->user_id);
             $userType = 'AGENT';
         }
@@ -251,10 +266,10 @@ class PaymentController extends Controller{
         $adminNotification = new AdminNotification();
         $adminNotification->user_type = $userType;
         $adminNotification->user_id = $data->getUser->id;
-        $adminNotification->title = 'Add money request from '.$user->username;
-        $adminNotification->click_url = urlPath('admin.deposit.details',$data->id);
+        $adminNotification->title = 'Add money request from ' . $user->username;
+        $adminNotification->click_url = urlPath('admin.deposit.details', $data->id);
         $adminNotification->save();
-     
+
         notify($data->getUser, 'DEPOSIT_REQUEST', [
             'method_name' => $data->gatewayCurrency()->name,
             'method_currency' => $data->method_currency,
@@ -265,10 +280,8 @@ class PaymentController extends Controller{
             'trx' => $data->trx,
             'currency' => $data->convertedCurrency->currency_code,
         ]);
-       
+
         $notify[] = ['success', 'You add money request has been taken'];
-        return to_route(strtolower(userGuard()['type']).'.deposit.history')->withNotify($notify);
+        return to_route(strtolower(userGuard()['type']) . '.deposit.history')->withNotify($notify);
     }
-
-
 }

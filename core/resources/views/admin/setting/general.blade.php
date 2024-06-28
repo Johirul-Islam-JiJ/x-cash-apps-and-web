@@ -49,6 +49,12 @@
                                     <input type="text" class="form-control colorCode" name="base_color" value="{{ $general->base_color }}"/>
                                 </div>
                             </div>
+                            <div class="form-group col-md-4 col-sm-6">
+                                <label> @lang('Bonus Amount(%)')</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="number" step="any" name="bonus_amount" required value="{{$general->bonus_amount}}" placeholder="@lang('Bonus amount')">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group">

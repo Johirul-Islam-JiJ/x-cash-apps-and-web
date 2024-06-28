@@ -19,13 +19,14 @@ class GeneralSettingController extends Controller
     }
 
     public function update(Request $request)
-    {       
+    {
         $request->validate([
             'site_name' => 'required|string|max:40',
             'cur_text' => 'required|string|max:40',
             'cur_sym' => 'required|string|max:40',
             'base_color' => 'nullable', 'regex:/^[a-f0-9]{6}$/i',
             'timezone' => 'required',
+            'bonus_amount' => 'required',
             'otp_expiration' => 'required|numeric|between:1,180',
         ],[
             'otp_expiration.between' => 'The otp expiration must be between 1 and 180 seconds',
@@ -35,6 +36,7 @@ class GeneralSettingController extends Controller
         $general->site_name = $request->site_name;
         $general->cur_text = $request->cur_text;
         $general->cur_sym = $request->cur_sym;
+        $general->bonus_amount = $request->bonus_amount;
         $general->base_color = $request->base_color;
 
         $general->otp_expiration = $request->otp_expiration;
@@ -44,7 +46,7 @@ class GeneralSettingController extends Controller
         $timezoneFile = config_path('timezone.php');
         $content = '<?php $timezone = '.$request->timezone.' ?>';
         file_put_contents($timezoneFile, $content);
-        
+
         $notify[] = ['success', 'General setting updated successfully'];
         return back()->withNotify($notify);
     }
@@ -56,7 +58,7 @@ class GeneralSettingController extends Controller
 
 
     public function systemConfigurationSubmit(Request $request)
-    {       
+    {
         $general = gs();
         $general->kv = $request->kv ? 1 : 0;
         $general->ev = $request->ev ? 1 : 0;
@@ -88,7 +90,7 @@ class GeneralSettingController extends Controller
     }
 
     public function logoIconUpdate(Request $request)
-    {   
+    {
         $request->validate([
             'logo' => ['image',new FileTypeValidate(['jpg','jpeg','png'])],
             'dark_logo' => ['image',new FileTypeValidate(['jpg','jpeg','png'])],
@@ -106,9 +108,9 @@ class GeneralSettingController extends Controller
                 return back()->withNotify($notify);
             }
         }
-        if ($request->hasFile('dark_logo')) { 
+        if ($request->hasFile('dark_logo')) {
             try {
-                $path = getFilePath('logoIcon'); 
+                $path = getFilePath('logoIcon');
                 if (!file_exists($path)) {
                     mkdir($path, 0755, true);
                 }
@@ -207,7 +209,7 @@ class GeneralSettingController extends Controller
     }
 
     public function qrCodeTemplateUpdate(Request $request){
- 
+
         $request->validate([
             'qr_code_template' => ['required','image',new FileTypeValidate(['jpg','jpeg','png'])]
         ]);
@@ -215,13 +217,13 @@ class GeneralSettingController extends Controller
         $general = gs();
 
         try {
-            $old = $general->qr_code_template; 
+            $old = $general->qr_code_template;
             $general->qr_code_template = fileUploader($request->qr_code_template, getFilePath('qr_code_template'), getFileSize('qr_code_template'), $old);
-        } catch (\Exception $exp) { 
+        } catch (\Exception $exp) {
             $notify[] = ['error', 'Couldn\'t upload your image'];
             return back()->withNotify($notify);
         }
-        
+
         $general->save();
 
         $notify[]=['success','Template updated successfully'];

@@ -9,7 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Traits\UserPartials;
 
 class User extends Authenticatable{
-    
+
     use HasApiTokens, UserPartials, Searchable;
 
     /**
@@ -62,6 +62,11 @@ class User extends Authenticatable{
     {
         return $this->hasMany(Withdrawal::class)->where('status','!=',0);
     }
+    public function getReferBy()
+    {
+        return $this->belongsTo(User::class, 'ref_by', 'id')->where('status', '!=', 0);
+    }
+
 
     public function fullname(): Attribute
     {
@@ -69,7 +74,7 @@ class User extends Authenticatable{
             get: fn () => $this->firstname . ' ' . $this->lastname,
         );
     }
- 
+
     // SCOPES
     public function scopeActive($query)
     {
@@ -112,7 +117,7 @@ class User extends Authenticatable{
     }
 
     public function scopeWithBalance($query)
-    { 
+    {
         return $query->whereHas('wallets', function($wallet){
             $wallet->where('balance','>', 0);
         });
