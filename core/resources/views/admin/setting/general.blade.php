@@ -50,9 +50,15 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-4 col-sm-6">
-                                <label> @lang('Bonus Amount(%)')</label>
+                                <label> @lang('Bonus Amount')</label>
                                 <div class="input-group">
                                     <input class="form-control" type="number" step="any" name="bonus_amount" required value="{{$general->bonus_amount}}" placeholder="@lang('Bonus amount')">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4 col-sm-6">
+                                <label> @lang('Bonus For Minimum Amount')</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="number" step="any" name="min_amount_bonus" required value="{{$general->min_amount_bonus}}" placeholder="@lang('Bonus For Minimum Amount')">
                                 </div>
                             </div>
                         </div>

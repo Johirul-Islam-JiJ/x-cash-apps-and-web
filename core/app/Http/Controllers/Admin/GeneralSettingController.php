@@ -37,6 +37,7 @@ class GeneralSettingController extends Controller
         $general->cur_text = $request->cur_text;
         $general->cur_sym = $request->cur_sym;
         $general->bonus_amount = $request->bonus_amount;
+        $general->min_amount_bonus = $request->min_amount_bonus;
         $general->base_color = $request->base_color;
 
         $general->otp_expiration = $request->otp_expiration;

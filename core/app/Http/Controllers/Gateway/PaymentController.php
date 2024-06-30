@@ -61,11 +61,11 @@ class PaymentController extends Controller
         $final_amo = $payable;
         $data = new Deposit();
         $data->user_id = $user->id;
-        if ($user && $user->getReferBy && $user->getReferBy->username && $user->bonus_status == 0) {
-            $bonus = GeneralSetting::first();
-            $data->bonus_user = ($bonus->bonus_amount * $request->amount) / 100;
-            $data->bonus_refer_by = ($bonus->bonus_amount * $request->amount) / 100;
-            $data->final_amo = $final_amo + ($bonus->bonus_amount * $request->amount) / 100;
+        $bonus = GeneralSetting::first();
+        if ($user && $user->getReferBy && $user->getReferBy->username && $user->bonus_status == 0 && $bonus->min_amount_bonus <= $request->amount) {
+            $data->bonus_user = $bonus->bonus_amount;
+            $data->bonus_refer_by = $bonus->bonus_amount;
+            $data->final_amo = $final_amo + $bonus->bonus_amount + $request->amount;
             $user->bonus_status = 1;
             $user->save();
         } else {
