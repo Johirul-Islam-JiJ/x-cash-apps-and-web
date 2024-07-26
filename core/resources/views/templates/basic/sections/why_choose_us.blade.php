@@ -3,34 +3,39 @@
     $elements = @getContent('why_choose_us.element', orderById:true);
 @endphp
 
-<section class="pt-100 pb-100 position-relative z-index-2 bg_img">
-    <div class="section-img bg_img opacity20"
-        style="background-image: url('{{ getImage('assets/images/frontend/why_choose_us/' .@$content->background_image, '1920x1080') }}');">
-    </div>
+<!-- <img src="{{ getImage('assets/images/frontend/why_choose_us/' .@$element->data_values->icon, '65x65') }}"
+                                alt="@lang('image')"> -->
+
+<section class="pt-100 pb-100 choose-section">
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row align-items-center">
             <div class="col-lg-6">
-                <div class="section-header text-center wow fadeInUp" data-wow-duration="0.3" data-wow-delay="0.3s">
+                <div class="section-header wow fadeInUp" data-wow-duration="0.3" data-wow-delay="0.3s">
+                    <span class="section-subtitle border-left">Why Choose</span>
                     <h2 class="section-title">{{ __(@$content->heading) }}</h2>
                     <p class="mt-3">{{ __(@$content->subheading) }}</p>
                 </div>
+
+                <ul class="choose-list">
+                    @foreach($elements as $element)
+                    <li class="choose-item">
+                        <span class="choose-list-icon">
+                            <i class="las la-check-circle"></i>
+                        </span>
+                        <span class="choose-list-text">
+                            {{ __(@$element->data_values->title) }}
+                        </span>
+                    </li>
+                    @endforeach
+                </ul>
             </div>
-        </div><!-- row end -->
-        <div class="row gy-4">
-            @foreach($elements as $element)
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-duration="0.3" data-wow-delay="0.1s">
-                    <div class="choose-card rounded-3">
-                        <div class="choose-card__icon">
-                            <img src="{{ getImage('assets/images/frontend/why_choose_us/' .@$element->data_values->icon, '65x65') }}"
-                                alt="@lang('image')">
-                        </div>
-                        <div class="choose-card__content">
-                            <h3 class="title">{{ __(@$element->data_values->title) }}</h3>
-                            <p class="mt-3">{{ @$element->data_values->short_details }}</p>
-                        </div>
-                    </div><!-- choose-card end -->
+
+            <div class="col-lg-6">
+                <div class="choose-thumb">
+                    <img src="{{ asset('assets/global/images/whychoose.png') }}" alt="">
                 </div>
-            @endforeach
+            </div>
+
         </div>
     </div>
 </section>
