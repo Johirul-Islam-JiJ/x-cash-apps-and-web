@@ -3,9 +3,9 @@
     $elements = @getContent('feature.element', orderById:true);
 @endphp
 
-<section class="feature-section">
+<section class="feature-section pt-100">
 
-    <div class="feature-top pt-100">
+    <div class="feature-top">
         <div class="container">
         <div class="feature-top-wrapper">
             <div class="row align-items-center justify-content-center">

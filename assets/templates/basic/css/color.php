@@ -99,5 +99,5 @@ if (!$secondColor OR !checkhexcolor2($secondColor)) {
 :root{
     --base: <?php echo $color; ?>;
     --base-two: #0C231F;
-    --primary: #e1ffa0;
+    --primary: #fff;
 }
