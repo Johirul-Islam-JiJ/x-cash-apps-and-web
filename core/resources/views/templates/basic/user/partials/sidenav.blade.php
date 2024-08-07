@@ -6,7 +6,7 @@
         ->with('currency')
         ->get(['currency_id', 'balance']);
 @endphp
-<div class="col-lg-3">
+<div class="col-lg-3 d-none">
     <div class="custom--card mb-4">
         <div class="card-body">
             <h6 class="mb-4 font-size--16px">{{ __($general->site_name) }} @lang('Balance')</h6>
@@ -117,6 +117,82 @@
         </div>
     </div><!-- custom--card end -->
 </div>
+<div class="dashboard">
+    <div class="sidebar-menu flex-between">
+        <div class="sidebar-menu__inner">
+            <span class="sidebar-menu__close d-lg-none d-block"><i class="fas fa-times"></i></span>
+            <!-- Sidebar Logo Start -->
+            <div class="sidebar-logo">
+                <a href="index.html" class="sidebar-logo__link"><img src="assets/images/logo/logo.png" alt=""></a>
+            </div>
+            <!-- Sidebar Logo End -->
+        
+            <!-- ========= Sidebar Menu Start ================ -->
+            <ul class="sidebar-menu-list">
+                
+                <li class="menu-title pt-0">MENU</li>
+                
+                <li class="sidebar-menu-list__item active">
+                    <a href="#" class="sidebar-menu-list__link">
+                        <span class="icon"><i class="fas fa-home"></i></span>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li> 
+                
+                <li class="sidebar-menu-list__item">
+                    <a href="#" class="sidebar-menu-list__link">
+                        <span class="icon"><i class="fas fa-file-invoice"></i></span>
+                        <span class="text">About</span>
+                    </a>
+                </li>
+        
+                <li class="sidebar-menu-list__item">
+                    <a href="#" class="sidebar-menu-list__link">
+                        <span class="icon"><i class="fas fa-shopping-cart"></i></span>
+                        <span class="text">Resources</span>
+                    </a>
+                </li>
+        
+                <li class="sidebar-menu-list__item has-dropdown">
+                    <a href="javascript:void(0)" class="sidebar-menu-list__link">
+                        <span class="icon"><i class="fas fa-globe"></i></span>
+                        <span class="text">Language</span>
+                    </a>
+                    <div class="sidebar-submenu">
+                        <ul class="sidebar-submenu-list">
+                            <li class="sidebar-submenu-list__item">
+                                <a href="#" class="sidebar-submenu-list__link">
+                                    <span class="text">Bangla </span>
+                                </a>
+                            </li>
+                            <li class="sidebar-submenu-list__item">
+                                <a href="#" class="sidebar-submenu-list__link">
+                                    <span class="text">English </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li> 
+        
+                <hr>
+                <li class="menu-title pt-0">SUPPORT</li>
+                <li class="sidebar-menu-list__item">
+                    <a href="#" class="sidebar-menu-list__link">
+                        <span class="icon"><i class="fas fa-phone"></i></span>
+                        <span class="text">Contact</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu-list__item">
+                    <a href="#" class="sidebar-menu-list__link">
+                        <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+                        <span class="text">Log Out</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- ========= Sidebar Menu End ================ -->
+        </div>
+    </div>
+</div>
 
 @push('script')
     <script>
@@ -147,4 +223,234 @@
             });
         })(jQuery);
     </script>
+@endpush
+
+
+@push('script')
+    <script>
+        $(".has-dropdown > a").click(function () {
+        $(".sidebar-submenu").slideUp(200);
+        if ($(this).parent().hasClass("active")) {
+            $(".has-dropdown").removeClass("active");
+            $(this).parent().removeClass("active");
+        } else {
+            $(".has-dropdown").removeClass("active");
+            $(this).next(".sidebar-submenu").slideDown(200);
+            $(this).parent().addClass("active");
+        }
+        });
+        // Sidebar Dropdown Menu End
+        // Sidebar Icon & Overlay js
+        $(".dashboard-body__bar-icon").on("click", function () {
+        $(".sidebar-menu").addClass("show-sidebar");
+        $(".sidebar-overlay").addClass("show");
+        });
+        $(".sidebar-menu__close, .sidebar-overlay").on("click", function () {
+        $(".sidebar-menu").removeClass("show-sidebar");
+        $(".sidebar-overlay").removeClass("show");
+        });
+    </script>
+@endpush
+
+@push("style")
+        <style>
+            
+            .dashboard .sidebar-menu {
+                height: 100vh;
+                background-color: hsl(var(--white));
+                overflow-y: auto;
+                z-index: 999;
+                transition: 0.2s linear;
+                width: 300px;
+                border-right: 1px solid hsl(var(--base-two)/0.15);
+                border-radius: 0;
+                position: fixed;
+                left: 0;
+                top: 0;
+                align-items: start;
+                flex-direction: row;
+            /* Menu Title Css */
+            /* Hr Css */
+            }
+
+            .dashboard .sidebar-menu::-webkit-scrollbar {
+                width: 3px;
+                height: 3px;
+            }
+
+            .dashboard .sidebar-menu::-webkit-scrollbar-thumb {
+                background-color: hsl(var(--black)/0.15);
+            }
+
+            .dashboard .sidebar-menu__inner {
+                padding: 0 24px;
+                width: 100%;
+            }
+
+            .dashboard .sidebar-menu.show-sidebar {
+                transform: translateX(0);
+            }
+
+            @media screen and (max-width: 991px) {
+                .dashboard .sidebar-menu {
+                    transform: translateX(-100%);
+                    z-index: 9992;
+                    border-radius: 0;
+                }
+            }
+
+            .dashboard .sidebar-menu__close {
+                position: absolute;
+                top: 8px;
+                right: 16px;
+                color: hsl(var(--body-color));
+                font-size: 1.25rem;
+                transition: 0.2s linear;
+                cursor: pointer;
+                z-index: 9;
+            }
+
+            .dashboard .sidebar-menu__close:active {
+                top: 14px;
+            }
+
+            .dashboard .sidebar-menu__close:hover, .dashboard .sidebar-menu__close:focus {
+                background-color: hsl(var(--white));
+                border-color: hsl(var(--white));
+                color: hsl(var(--base));
+            }
+
+            .dashboard .sidebar-menu .menu-title {
+                letter-spacing: 0.9px;
+                padding: 12px 15px;
+                color: #9da9b5;
+                font-weight: 600;
+            }
+
+            .dashboard .sidebar-menu hr {
+                opacity: 0.15;
+            }
+
+            .dashboard .sidebar-menu-list {
+                margin-top: 40px;
+            }
+
+            .dashboard .sidebar-menu-list__item {
+                margin-bottom: 6px;
+            }
+
+            .dashboard .sidebar-menu-list__item:last-child .sidebar-menu-list__link {
+                border-bottom: 0;
+            }
+
+            .dashboard .sidebar-menu-list__item.active > a {
+                background-color: hsl(var(--base)/0.1);
+                color: hsl(var(--base));
+            }
+
+            .dashboard .sidebar-menu-list__item.has-dropdown.active > a {
+                color: hsl(var(--base));
+            }
+
+            .dashboard .sidebar-menu-list__item.has-dropdown.active > a:after {
+                transform: rotate(90deg);
+                right: 18px;
+                color: hsl(var(--base));
+            }
+
+            .dashboard .sidebar-menu-list__item.has-dropdown > a:after {
+                position: absolute;
+                content: "\f105";
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                font-style: normal;
+                display: inline-block;
+                font-style: normal;
+                font-variant: normal;
+                text-rendering: auto;
+                text-align: center;
+                background: 0 0;
+                right: 16px;
+                top: 14px;
+                transition: 0.1s linear;
+                color: hsl(var(--body-color)/0.6);
+            }
+
+            .dashboard .sidebar-menu-list__link {
+                display: inline-block;
+                text-decoration: none;
+                position: relative;
+                padding: 12px 15px;
+                width: 100%;
+                color: #6b717e;
+                font-weight: 500;
+                border-radius: 5px;
+            }
+
+            .dashboard .sidebar-menu-list__link:hover {
+                background-color: hsl(var(--base)/0.06);
+            }
+
+            .dashboard .sidebar-menu-list__link.active {
+                color: hsl(var(--base));
+            }
+
+            .dashboard .sidebar-menu-list__link .icon {
+                margin-right: 8px;
+                text-align: center;
+                border-radius: 4px;
+            }
+
+            .dashboard .sidebar-submenu {
+                display: none;
+            }
+
+            .dashboard .sidebar-submenu.open-submenu {
+                display: block;
+            }
+
+            .dashboard .sidebar-submenu-list {
+                padding: 5px 0;
+            }
+
+            .dashboard .sidebar-submenu-list__item {
+                margin-bottom: 6px;
+            }
+
+            .dashboard .sidebar-submenu-list__item.active > a {
+                color: hsl(var(--base));
+                background-color: hsl(var(--base)/0.06);
+            }
+
+            .dashboard .sidebar-submenu-list__link {
+                padding: 12px 15px;
+                display: block;
+                color: hsl(var(--body-color));
+                color: #6b717e;
+                font-weight: 500;
+                margin-left: 20px;
+                border-radius: 5px;
+                position: relative;
+                padding-left: 25px;
+            }
+
+            .dashboard .sidebar-submenu-list__link::before {
+                left: 10px;
+                width: 10px;
+                height: 10px;
+                background-color: transparent;
+                border: 1px solid hsl(var(--black)/0.4);
+                border-radius: 50%;
+            }
+
+            .dashboard .sidebar-submenu-list__link:hover {
+                background-color: hsl(var(--base)/0.04);
+            }
+
+            .dashboard .sidebar-submenu-list__link .icon {
+                margin-right: 8px;
+                text-align: center;
+                border-radius: 4px;
+            }
+        </style>
 @endpush

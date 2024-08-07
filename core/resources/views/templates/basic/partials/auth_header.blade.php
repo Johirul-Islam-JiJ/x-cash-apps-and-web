@@ -55,7 +55,7 @@
             </div>
         </div>
     </div>
-    <div class="header__bottom">
+    <div class="header__bottom bg-primary">
         <div class="container">
             <nav class="navbar navbar-expand-xl p-0 align-items-center">
                 <a class="site-logo site-title" href="{{ route('home') }}">
@@ -130,5 +130,5 @@
                 </div>
             </nav>
         </div>
-    </div><!-- header__bottom end -->
+    </div>
 </header>
