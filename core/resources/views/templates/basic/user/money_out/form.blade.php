@@ -45,7 +45,7 @@
                                             </select>
                                             </div>
 
-                                        <span class="charge" data-charge="{{$moneyOutCharge}}"></span>
+                                        <span class="charge" data-charge="{{@$moneyOutCharge}}"></span>
 
                                     </div><!-- row end -->
                                 </div>
@@ -57,8 +57,8 @@
                                             <input type="number" step="any" class="form--control style--two amount" name="amount" placeholder="@lang('Amount')" required value="{{old('amount')}}">
                                         </div>
                                         <label>
-                                            <span class="text--warning min">@lang('Min: '){{getAmount($moneyOutCharge->min_limit)}} {{defaultCurrency()}} --</span>
-                                            <span class="text--warning max">@lang('Max: '){{getAmount($moneyOutCharge->max_limit)}} {{defaultCurrency()}}</span>
+                                            <span class="text--warning min">@lang('Min: '){{getAmount(@$moneyOutCharge->min_limit)}} {{defaultCurrency()}} --</span>
+                                            <span class="text--warning max">@lang('Max: '){{getAmount(@$moneyOutCharge->max_limit)}} {{defaultCurrency()}}</span>
                                             </label>
                                     </div><!-- row end -->
                                 </div>
@@ -213,8 +213,8 @@
             var rate  =  $('.currency option:selected').data('rate')
             var currCode  =  $('.currency option:selected').data('code')
             var type  =  $('.currency option:selected').data('type')
-            var min_limit = '{{getAmount($moneyOutCharge->min_limit)}}'
-            var max_limit = '{{getAmount($moneyOutCharge->max_limit)}}'
+            var min_limit = '{{getAmount(@$moneyOutCharge->min_limit)}}'
+            var max_limit = '{{getAmount(@$moneyOutCharge->max_limit)}}'
 
             var min = min_limit/rate
             var max = max_limit/rate

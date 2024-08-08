@@ -46,15 +46,15 @@
                                         </div>
                                         <label>
                                             <span class="text--warning min">@lang('Min: ')
-                                                {{getAmount($voucherCharge->min_limit)}} {{defaultCurrency()}} --
+                                                {{getAmount(@$voucherCharge->min_limit)}} {{defaultCurrency()}} --
                                             </span>
                                             <span class="text--warning max">@lang('Max: ')
-                                                {{getAmount($voucherCharge->max_limit)}} {{defaultCurrency()}}
+                                                {{getAmount(@$voucherCharge->max_limit)}} {{defaultCurrency()}}
                                             </span>
                                          </label>
                                     </div><!-- row end -->
                                 </div>
-                                <input type="hidden" class="charge" data-fixcharge="{{$voucherCharge->fixed_charge}}" data-percentcharge="{{$voucherCharge->percent_charge}}" data-cap ="{{$voucherCharge->cap}}">
+                                <input type="hidden" class="charge" data-fixcharge="{{@$voucherCharge->fixed_charge}}" data-percentcharge="{{@$voucherCharge->percent_charge}}" data-cap ="{{@$voucherCharge->cap}}">
                                 <input type="hidden" class="commission">
                                 @if($general->otp_verification && ($general->en || $general->sn || auth()->user()->ts))
                                     <div class="p-4 border mb-4">
@@ -172,8 +172,8 @@
             var rate  =  $('.currency option:selected').data('rate')
             var currCode  =  $('.currency option:selected').data('code')
             var type  =  $('.currency option:selected').data('type')
-            var min_limit = '{{getAmount($voucherCharge->min_limit)}}'
-            var max_limit = '{{getAmount($voucherCharge->max_limit)}}'
+            var min_limit = '{{getAmount(@$voucherCharge->min_limit)}}'
+            var max_limit = '{{getAmount(@$voucherCharge->max_limit)}}'
 
             var min = min_limit/rate
             var max = max_limit/rate

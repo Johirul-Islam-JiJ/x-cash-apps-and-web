@@ -9,8 +9,9 @@
             <div class="container">
                 <div class="row justify-content-center">
                     @if(request()->routeIs('user.home'))
-                        @include($activeTemplate.'user.partials.sidenav')
+                    @include($activeTemplate.'user.partials.sidecash')
                     @endif
+                    @include($activeTemplate.'user.partials.sidenav')
                     @yield('content')
                 </div>
             </div>

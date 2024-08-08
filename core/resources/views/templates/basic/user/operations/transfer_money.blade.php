@@ -14,7 +14,7 @@
                 <div class="col-lg-8">
                     <form action="" method="POST" id="form">
                         @csrf
-                        <input type="hidden" name="charge_id" value="{{$transferCharge->id}}">
+                        <input type="hidden" name="charge_id" value="{{@$transferCharge->id}}">
                         <div class="d-widget">
                             <div class="d-widget__header">
                                 <h6>@lang('Transfer Details')</h4>
@@ -39,7 +39,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <label class="charge" data-charge="{{$transferCharge}}">
+                                        <label class="charge" data-charge="{{@$transferCharge}}">
                                            @lang('Total Charge : ') <span class="total_charge">0.00</span>
                                         </label>
                                     </div><!-- row end -->
@@ -51,10 +51,10 @@
                                             <input type="number" step="any" class="form--control style--two amount" name="amount" disabled placeholder="0.00" required value="{{old('amount')}}">
                                             <label>
                                                 <span class="text--warning min">
-                                                    @lang('Min: '){{getAmount($transferCharge->min_limit)}} {{defaultCurrency()}} --
+                                                    @lang('Min: '){{getAmount(@$transferCharge->min_limit)}} {{defaultCurrency()}} --
                                                 </span>
                                                 <span class="text--warning max">
-                                                    @lang('Max: '){{getAmount($transferCharge->max_limit)}} {{defaultCurrency()}}
+                                                    @lang('Max: '){{getAmount(@$transferCharge->max_limit)}} {{defaultCurrency()}}
                                                 </span>
                                              </label>
                                         </div>
@@ -202,8 +202,8 @@
             var amount = $('.amount').val()
             chargeCalc(amount,chargeData,rate,code)
 
-            var min_limit = '{{getAmount($transferCharge->min_limit)}}'
-            var max_limit = '{{getAmount($transferCharge->max_limit)}}'
+            var min_limit = '{{getAmount(@$transferCharge->min_limit)}}'
+            var max_limit = '{{getAmount(@$transferCharge->max_limit)}}'
 
             var min = min_limit/rate
             var max = max_limit/rate
