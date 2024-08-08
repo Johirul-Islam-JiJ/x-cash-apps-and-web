@@ -87,8 +87,7 @@ if (!$secondColor OR !checkhexcolor2($secondColor)) {
     color: <?php echo $color ?>;
 }
 
-.preloader .animated-preloader, .preloader .animated-preloader::before,
-.header__top{
+.preloader .animated-preloader, .preloader .animated-preloader::before{
     background: <?php echo $color ?>;
 }
 

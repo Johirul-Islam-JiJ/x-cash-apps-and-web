@@ -2338,9 +2338,11 @@ label {
 /* header start */
 
 .header__top {
-  background-color: #4582ff;
-  padding: 0.3125rem 0;
+  background-color: #fff;
+  padding: 20px 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
+
 .header__bottom {
   padding: 0.3125rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
@@ -2672,13 +2674,13 @@ label {
 }
 .header-top-menu li a {
   font-size: 0.875rem;
-  color: #fff;
+  color: #000;
 }
 .header-username {
-  color: #fff;
+  color: #000;
 }
 .header-username:hover {
-  color: #fff;
+  color: #000;
 }
 .header-user {
   display: flex;
