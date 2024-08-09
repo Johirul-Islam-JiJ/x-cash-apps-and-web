@@ -5,15 +5,13 @@
     @include($activeTemplate.'partials.auth_header')
 
     <div class="main-wrapper">
-        <div class="pt-50 pb-50">
-            <div class="container">
-                <div class="row justify-content-center">
-                    @if(request()->routeIs('user.home'))
-                    @include($activeTemplate.'user.partials.sidecash')
-                    @endif
-                    @include($activeTemplate.'user.partials.sidenav')
-                    @yield('content')
-                </div>
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                @if(request()->routeIs('user.home'))
+                @include($activeTemplate.'user.partials.sidecash')
+                @endif
+                @include($activeTemplate.'user.partials.sidenav')
+                @yield('content')
             </div>
         </div>
     </div>
