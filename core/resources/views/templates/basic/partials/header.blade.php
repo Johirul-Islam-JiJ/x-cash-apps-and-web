@@ -46,8 +46,11 @@
 <div class="header__bottom header">
     <div class="container">
         <nav class="navbar navbar-expand-xl p-0 align-items-center">
-            <a class="site-logo site-title" href="{{ route('home') }}">
+            <!-- <a class="site-logo site-title" href="{{ route('home') }}">
                 <img src="{{getImage(getFilePath('logoIcon') .'/dark_logo.png')}}" alt="@lang('logo')">
+            </a> -->
+            <a class="site-logo site-title" href="{{ route('home') }}">
+                <img src="{{ asset('assets/global/images/logo.png') }}" alt="@lang('logo')">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
