@@ -34,7 +34,7 @@
         <div class="row mb-5 gy-4 d-lg-flex d-none">
             @foreach ($wallets as $wallet)
                 <div class="col-lg-4 col-md-6">
-                    <div class="d-widget curve--shape">
+                    <div class="d-widget curve--shape style-two">
                         <div class="d-widget__content">
                             <i class="las la-wallet"></i>
                             <h2 class="d-widget__amount fw-normal amount__responsive">
@@ -62,7 +62,7 @@
                         <h6>@lang('Quick Links')</h6>
                     </div>
                 </div>
-                <div class="row justify-content-center gy-4">
+                <div class="row gy-4">
                     @include($activeTemplate . 'user.partials.quick_links')
                 </div><!-- row end -->
             </div>
@@ -189,7 +189,6 @@
             </div>
         </div>
     </div>
-    
 @endsection
 
 @push('script')
