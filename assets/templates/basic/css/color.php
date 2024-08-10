@@ -12,7 +12,7 @@ if (isset($_GET['color']) AND $_GET['color'] != '') {
 }
 
 if (!$color OR !checkhexcolor($color)) {
-    $color = "#336699";
+    $color = "#229def";
 }
 
 
@@ -25,17 +25,17 @@ if (isset($_GET['secondColor']) AND $_GET['secondColor'] != '') {
 }
 
 if (!$secondColor OR !checkhexcolor2($secondColor)) {
-    $secondColor = "#336699";
+    $secondColor = "#229def";
 }
 
 ?>
 
-.btn--base,.hero__subtitle::before,.hero__subtitle::after,.video-btn .icon::before, .video-btn .icon::after,.video-btn .icon,.video-btn .icon::before, .video-btn .icon::after,.about-thumb .about-img-content,.section-subtitle.border-left::before,.testimonial-slide-area .content-slider .slick-arrow,.blog-card .post-time,.cta-wrapper,.footer-widget__title::before,.bg--base,.form-check-input:checked,.d-widget.curve--shape::before,.quick-link-card .icon::before,.header .main-menu li .sub-menu li a::before,.pagination .page-item.active .page-link,.pagination .page-item .page-link:hover,.sidebar-menu__header::before{
+.btn--base,.hero__subtitle::before,.hero__subtitle::after,.video-btn .icon::before, .video-btn .icon::after,.video-btn .icon,.video-btn .icon::before, .video-btn .icon::after,.about-thumb .about-img-content,.section-subtitle.border-left::before,.testimonial-slide-area .content-slider .slick-arrow,.blog-card .post-time,.cta-wrapper,.footer-widget__title::before,.bg--base,.form-check-input:checked,.d-widget.curve--shape::before,.header .main-menu li .sub-menu li a::before,.pagination .page-item.active .page-link,.pagination .page-item .page-link:hover,.sidebar-menu__header::before{
     background-color: <?php echo $color; ?> !important
 }
 
 
-.header .main-menu li a:hover, .header .main-menu li a:focus,.text--base,.footer-link-list li a:hover,.blog-title a:hover,.s-post__title a:hover,.page-breadcrumb li:first-child::before,.account-form .form-group a,.font-size--14px a,.user-account-check .form-check-input:checked ~ label i,.quick-link-card .icon,.quick-link-card:hover,.fw-bold,.inline-menu-list li a:hover,.header .main-menu li.menu_has_children:hover > a::before,.trans-serach-open-btn,.custom-select-search-box .search-box-btn,.sidebar-menu__item.active .sidebar-menu__link,.sidebar-menu__link:hover,.header-user-menu li a:hover{
+.header .main-menu li a:hover, .header .main-menu li a:focus,.text--base,.footer-link-list li a:hover,.blog-title a:hover,.s-post__title a:hover,.page-breadcrumb li:first-child::before,.account-form .form-group a,.font-size--14px a,.user-account-check .form-check-input:checked ~ label i,.quick-link-card:hover,.fw-bold,.inline-menu-list li a:hover,.header .main-menu li.menu_has_children:hover > a::before,.trans-serach-open-btn,.custom-select-search-box .search-box-btn,.sidebar-menu__item.active .sidebar-menu__link,.sidebar-menu__link:hover,.header-user-menu li a:hover{
     color: <?php echo $color; ?> !important
 }
 
@@ -51,10 +51,6 @@ if (!$secondColor OR !checkhexcolor2($secondColor)) {
     border-color:<?php echo $color; ?> !important
 }
 
-.d-widget{
-    border-left: 4px solid <?php echo $color; ?> !important
-}
-
 .user-account-check .form-check-input:checked ~ label,.form-check-input:checked{
     border-color: <?php echo $color; ?> !important
 }
@@ -66,10 +62,6 @@ if (!$secondColor OR !checkhexcolor2($secondColor)) {
     background-color: <?php echo $color.'40'; ?> !important
 }
 
-.quick-link-card:hover .icon {
-    color: #fff !important;
-    border-color: <?php echo $color ?>;
-}
 
 .accordion-button:not(.collapsed){
     background-color:<?php echo $color.'1A'; ?> !important

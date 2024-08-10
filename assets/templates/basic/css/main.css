@@ -2404,6 +2404,8 @@ label {
 }
 .header__top {
   padding: 0.625rem 3.125rem;
+  background-color: #0087ff;
+  position: relative !important;
 }
 @media (max-width: 480px) {
   .header__top {

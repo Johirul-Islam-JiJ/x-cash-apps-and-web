@@ -10,61 +10,57 @@
             <h4 class="fw-normal">@lang('Request Money')</h4>
         </div>
         <div class="card-body p-4">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <form action="" method="POST" id="form">
-                        @csrf
-                        <input type="hidden" name="charge_id" value="{{@@$transferCharge->id}}">
-                        <div class="d-widget">
-                            <div class="d-widget__header">
-                                <h6>@lang('Request Details')</h4>
-                            </div>
-                            <div class="d-widget__content px-5">
-                                <div class="p-4 border mb-4">
-                                    <div class="row">
-                                        <div class="col-lg-12 form-group">
-                                            <label class="mb-0">@lang('Select Wallet')</label>
-                                            <select class="select style--two currency" name="wallet_id" required>
-                                                <option value="" selected>@lang('Select Wallet')</option>
-                                                @foreach ($wallets as $wallet)
-                                                <option value="{{$wallet->id}}" data-code="{{$wallet->currency->currency_code}}" data-rate="{{$wallet->currency->rate}}" data-type="{{$wallet->currency->currency_type}}">{{$wallet->currency->currency_code}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <label class="charge" data-charge="{{@$transferCharge}}"> 
-                                           @lang('Total Charge : ') <span class="total_charge">0.00</span>
-                                        </label>
-                                    </div><!-- row end -->
+            <form action="" method="POST" id="form">
+                @csrf
+                <input type="hidden" name="charge_id" value="{{@@$transferCharge->id}}">
+                <div class="d-widget">
+                    <div class="d-widget__header">
+                        <h6>@lang('Request Details')</h4>
+                    </div>
+                    <div class="d-widget__content px-5">
+                        <div class="p-4 border mb-4">
+                            <div class="row">
+                                <div class="col-lg-12 form-group">
+                                    <label class="mb-0">@lang('Select Wallet')</label>
+                                    <select class="select style--two currency" name="wallet_id" required>
+                                        <option value="" selected>@lang('Select Wallet')</option>
+                                        @foreach ($wallets as $wallet)
+                                        <option value="{{$wallet->id}}" data-code="{{$wallet->currency->currency_code}}" data-rate="{{$wallet->currency->rate}}" data-type="{{$wallet->currency->currency_type}}">{{$wallet->currency->currency_code}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="p-4 border mb-4">
-                                    <div class="row">
-                                        <div class="col-lg-6 form-group">
-                                            <label class="mb-0">@lang('Amount to Request')<span class="text--danger">*</span> </label>
-                                            <input type="number" step="any" class="form--control style--two amount" disabled name="amount" placeholder="0.00" required value="{{old('amount')}}">
-                                            <label> 
-                                                <span class="text--warning min">@lang('Min: '){{getAmount(@$transferCharge->min_limit)}} {{$general->cur_text}} --</span>
-                                                <span class="text--warning max">@lang('Max: '){{getAmount(@$transferCharge->max_limit)}} {{$general->cur_text}}</span>
-                                             </label>
-                                        </div>
-                                        <div class="col-lg-6 form-group">
-                                            <label class="mb-0">@lang('Request to.')<span class="text--danger">*</span></label>
-                                            <input type="text" class="form--control style--two checkUser" name="user" placeholder="@lang('Username / E-mail')" value="{{old('user')}}" required>
-                                            <label class="exist text-end"></label>
-                                        </div>
-                                    </div><!-- row end -->
-                                </div>
-                                <div class="form-group">
-                                    <label>@lang('Note for recipient')</label>
-                                    <textarea class="form--control" name="note"></textarea>
-                                </div>
-                            </div>
-                        </div>  
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-md btn--base mt-4 request w-100">@lang('Request Now')</button>
+                                <label class="charge" data-charge="{{@$transferCharge}}"> 
+                                   @lang('Total Charge : ') <span class="total_charge">0.00</span>
+                                </label>
+                            </div><!-- row end -->
                         </div>
-                    </form>
+                        <div class="p-4 border mb-4">
+                            <div class="row">
+                                <div class="col-lg-6 form-group">
+                                    <label class="mb-0">@lang('Amount to Request')<span class="text--danger">*</span> </label>
+                                    <input type="number" step="any" class="form--control style--two amount" disabled name="amount" placeholder="0.00" required value="{{old('amount')}}">
+                                    <label> 
+                                        <span class="text--warning min">@lang('Min: '){{getAmount(@$transferCharge->min_limit)}} {{$general->cur_text}} --</span>
+                                        <span class="text--warning max">@lang('Max: '){{getAmount(@$transferCharge->max_limit)}} {{$general->cur_text}}</span>
+                                     </label>
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="mb-0">@lang('Request to.')<span class="text--danger">*</span></label>
+                                    <input type="text" class="form--control checkUser" name="user" placeholder="@lang('Username / E-mail')" value="{{old('user')}}" required>
+                                    <label class="exist text-end"></label>
+                                </div>
+                            </div><!-- row end -->
+                        </div>
+                        <div class="form-group">
+                            <label>@lang('Note for recipient')</label>
+                            <textarea class="form--control" name="note"></textarea>
+                        </div>
+                    </div>
+                </div>  
+                <div class="text-center">
+                    <button type="submit" class="btn btn-md btn--base mt-4 request w-100">@lang('Request Now')</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

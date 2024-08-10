@@ -16,7 +16,7 @@
                 {{ @$general->cur_text }}<sup>*</sup></h2>
             <div class="d-flex flex-wrap align-items-center justify-content-between mt-3">
                 <p class="text-muted">@lang('Availabe')</p>
-                <a href="{{ route('user.wallets') }}" class="font-size--14px text--base d-lg-none">@lang('More Wallets') 
+                <a href="{{ route('user.wallets') }}" class="font-size--14px text--base d-lg-none">@lang('More Wallets')
                     <i class="las la-long-arrow-alt-right"></i>
                 </a>
             </div>
@@ -83,14 +83,14 @@
                 {{ $general->cur_sym }}{{ showAmount($totalMoneyInOut['totalMoneyIn'], $general->currency) }}
                 {{ $general->cur_text }}<sup>*</sup>
             </h3>
-            <a href="{{ route('user.transactions', ['type'=>'plus_trx']) }}"
+            <a href="{{ route('user.transactions', ['type' => 'plus_trx']) }}"
                 class="text--link text-muted font-size--14px">@lang('Total received')
             </a>
             <div class="d-flex flex-wrap align-items-center justify-content-between mt-4">
                 @if (module('request_money', $module)->status)
                     <a href="{{ route('user.request.money') }}" class="font-size--14px fw-bold">@lang('Request Money')</a>
                 @endif
-                <a href="{{ route('user.transactions', ['type'=>'plus_trx']) }}"
+                <a href="{{ route('user.transactions', ['type' => 'plus_trx']) }}"
                     class="font-size--14px fw-bold">@lang('View Transactions')
                 </a>
             </div>
@@ -104,14 +104,14 @@
                 {{ $general->cur_sym }}{{ showAmount($totalMoneyInOut['totalMoneyOut'], $general->currency) }}
                 {{ $general->cur_text }}<sup>*</sup>
             </h3>
-            <a href="{{ route('user.transactions', ['type'=>'minus_trx']) }}"
+            <a href="{{ route('user.transactions', ['type' => 'minus_trx']) }}"
                 class="text--link text-muted font-size--14px">@lang('Total spent')
             </a>
             <div class="d-flex flex-wrap align-items-center justify-content-between mt-4">
                 @if (module('transfer_money', $module)->status)
                     <a href="{{ route('user.transfer') }}" class="font-size--14px fw-bold">@lang('Send Money')</a>
                 @endif
-                <a href="{{ route('user.transactions', ['type'=>'minus_trx']) }}"
+                <a href="{{ route('user.transactions', ['type' => 'minus_trx']) }}"
                     class="font-size--14px fw-bold">@lang('View Transactions')
                 </a>
             </div>

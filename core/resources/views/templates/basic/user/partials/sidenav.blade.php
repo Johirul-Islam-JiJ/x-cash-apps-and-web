@@ -168,9 +168,13 @@
 
 @push('style')
     <style>
+        .sidebar-menu-list {
+            margin-top: 32px;
+        }
+
         .sidebar-menu {
-            height: calc(100vh - 78px);
-            background-color: #f2f2f2;
+            height: calc(100vh - 76px);
+            background-color: #f4f4f4;
             overflow-y: auto;
             z-index: 999;
             transition: 0.2s linear;
@@ -178,7 +182,7 @@
             border-radius: 0;
             position: fixed;
             left: 0;
-            top: 78px;
+            top: 76px;
             padding: 0;
         }
 
@@ -204,6 +208,8 @@
                 transform: translateX(-100%);
                 z-index: 9992;
                 border-radius: 0;
+                height: 100vh;
+                top: 0;
             }
         }
 
