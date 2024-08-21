@@ -7,7 +7,7 @@
         ->get(['currency_id', 'balance']);
 @endphp
 
-<div class="col-lg-3">
+<div class="col-lg-3 d-none">
     <div class="custom--card mb-4">
         <div class="card-body">
             <h6 class="mb-4 font-size--16px">{{ __($general->site_name) }} @lang('Balance')</h6>

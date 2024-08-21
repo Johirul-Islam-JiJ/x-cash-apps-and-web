@@ -2990,17 +2990,16 @@ label {
   z-index: -1;
 }
 
-.service-section {
+/* .service-section {
   background: linear-gradient(180deg, var(--base-two) 0%, var(--base) 100%);
-}
+} */
 
 .service-card {
   padding: 20px 20px 20px 20px;
-  /* background-color: #e1ffa000; */
+  background-color: #f8f8f8;
   transition: background 0.3s;
   border-radius: 12px;
   text-align: center;
-  background-color: #ffffff0f;
 }
 
 .text--primary {
@@ -3013,14 +3012,9 @@ label {
   }
 }
 
-.service-section {
-  background: linear-gradient(180deg, var(--base-two) 0%, var(--base) 100%);
-  border-radius: 50px 50px 0px 0px;
-}
-
 .service-card__icon {
-  background-color: #517353;
-  border: 10px solid #284d3d;
+  background-color: #03a9f4;
+  border: 10px solid #229def;
   border-radius: 50%;
   overflow: hidden;
   font-size: 24px;
@@ -3033,12 +3027,12 @@ label {
 }
 
 .service-card__content .title {
-  color: #fff;
+  color: #000000;
   font-size: 18px;
   margin-bottom: 12px;
 }
 .service-card__content .desc {
-  color: #ffffff8f;
+  color: #201c1cf4;
   font-size: 0.875rem;
 }
 
@@ -3294,7 +3288,7 @@ label {
 .choose-section {
   background-image: radial-gradient(
       ellipse at 40% 60%,
-      rgb(225 255 160 / 40%),
+      rgb(34 157 239 / 18%),
       hsla(0, 0%, 100%, 0) 70%
     ),
     radial-gradient(circle at 74% 69%, #f7e2e5, hsla(0, 0%, 100%, 0) 20%),
@@ -4562,4 +4556,59 @@ label {
   height: 100%;
   width: 100%;
   object-fit: cover;
+}
+
+.link-appstore {
+  max-width: 180px;
+  width: 100%;
+
+  @media (max-width: 425px) {
+    max-width: 150px;
+  }
+}
+
+.testimoinal-item {
+  margin-inline: 12px;
+  padding: 16px;
+  background-color: #f8f8f8;
+  border-radius: 12px;
+}
+
+.testimoinal-item-desc {
+  font-size: 16px;
+  font-weight: 500;
+  color: #0000009e;
+  margin-bottom: 16px;
+}
+
+.testimoinal-item-auth {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+}
+
+.testimoinal-item-image {
+  height: 54px;
+  width: 54px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+}
+
+.testimoinal-item-content {
+  .name {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 3px;
+  }
+  .desi {
+    font-size: 14px;
+  }
 }
