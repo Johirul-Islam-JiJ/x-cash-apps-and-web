@@ -25,8 +25,8 @@
         <div class="push_notice"></div>
 
         <div class="d-lg-flex justify-content-between">
-            <h6 class="mb-3">@lang('Wallets')</h6>
-            <a href="{{ route('user.wallets') }}" class="font-size--14px text--base">@lang('More Wallets')
+            <h6 class="mb-3">@lang('Currency')</h6>
+            <a href="{{ route('user.wallets') }}" class="font-size--14px text--base">@lang('More Currency')
                 <i class="las la-long-arrow-alt-right"></i>
             </a>
         </div>

@@ -19,15 +19,13 @@
                         <input type="hidden" name="currency">
                         <input type="hidden" name="currency_id">
                         <select class="select" name="wallet_id" id="wallet" required>
-                            <option>@lang('Select Wallet')</option>
+                            <option>@lang('Select Currency')</option>
                             @foreach (userGuard()['user']->wallets as $wallet)
                                 <option value="{{ $wallet->id }}" data-code="{{ $wallet->currency->currency_code }}"
                                     data-sym="{{ $wallet->currency->currency_symbol }}"
-                                    data-rate="{{ $wallet->currency->rate }}"
-                                    data-currency="{{ $wallet->currency->id }}"
+                                    data-rate="{{ $wallet->currency->rate }}" data-currency="{{ $wallet->currency->id }}"
                                     data-type="{{ $wallet->currency->currency_type }}"
-                                    data-gateways="{{ $wallet->gateways() }}"
-                                >
+                                    data-gateways="{{ $wallet->gateways() }}">
                                     @lang($wallet->currency->currency_code)
                                 </option>
                             @endforeach
@@ -66,15 +64,15 @@
                             </li>
                             <li>
                                 <span class="caption">@lang('Charge')</span>
-                                <div class="value"> 
-                                    <span class="sym">{{ $general->cur_sym }}</span><span class="charge">0.00</span> 
+                                <div class="value">
+                                    <span class="sym">{{ $general->cur_sym }}</span><span class="charge">0.00</span>
                                 </div>
                             </li>
                         </ul>
                         <div class="add-money-details-bottom">
                             <span class="caption">@lang('Payable')</span>
                             <div class="value">
-                                <span class="sym">{{ $general->cur_sym }}</span><span class="payable">0.00</span> 
+                                <span class="sym">{{ $general->cur_sym }}</span><span class="payable">0.00</span>
                             </div>
                         </div>
                     </div>
@@ -98,13 +96,13 @@
                     return false
                 }
 
-                wallet  =  $(this);
+                wallet = $(this);
 
                 var gateways = $(this).find('option:selected').data('gateways')
                 var sym = $(this).find('option:selected').data('sym')
                 var code = $(this).find('option:selected').data('code')
                 var rate = $(this).find('option:selected').data('rate')
-                
+
                 $('.curr_code').text(code)
                 $('.sym').text(sym)
                 $('input[name=currency]').val(code)
@@ -131,7 +129,7 @@
             })
 
             $('.gateway').on('change', function() {
-                
+
                 if ($('.gateway option:selected').val() == '') {
                     $('.amount').attr('disabled', true)
                     $('.charge').text('0.00')
@@ -139,7 +137,7 @@
                     $('.limit').text('limit : 0.00 USD')
                     return false
                 }
-        
+
                 $('.amount').removeAttr('disabled')
                 var amount = $('.amount').val() ? parseFloat($('.amount').val()) : 0;
                 var code = $(wallet).find('option:selected').data('code')
@@ -150,13 +148,13 @@
                 var min = parseFloat($('.gateway option:selected').data('min'))
                 var max = parseFloat($('.gateway option:selected').data('max'))
 
-                min = min/rate;
-                max = max/rate;
+                min = min / rate;
+                max = max / rate;
 
                 var fixed = parseFloat($('.gateway option:selected').data('fixcharge'))
                 var pCharge = parseFloat($('.gateway option:selected').data('percent'))
                 var percent = (amount * parseFloat($('.gateway option:selected').data('percent'))) / 100
-             
+
                 var totalCharge = fixed + percent
                 var totalAmount = amount + totalCharge
                 var precesion = 0;
@@ -166,10 +164,11 @@
                 } else {
                     precesion = 8;
                 }
-                
+
                 $('.charge').text(totalCharge.toFixed(precesion))
                 $('.payable').text(totalAmount.toFixed(precesion))
-                $('.limit').text('limit : ' + min.toFixed(precesion) + ' ~ ' + max.toFixed(precesion) + ' ' + code)
+                $('.limit').text('limit : ' + min.toFixed(precesion) + ' ~ ' + max.toFixed(precesion) + ' ' +
+                    code)
 
                 $('.f_charge').text(fixed)
                 $('.p_charge').text(pCharge)
@@ -207,7 +206,8 @@
             })
 
             $('.req_confirm').on('click', function() {
-                if ($('.amount').val() == '' || $('.gateway option:selected').val() == '' || $(wallet).find('option:selected').val() == '') {
+                if ($('.amount').val() == '' || $('.gateway option:selected').val() == '' || $(wallet).find(
+                        'option:selected').val() == '') {
                     notify('error', 'All fields are required')
                     return false
                 }

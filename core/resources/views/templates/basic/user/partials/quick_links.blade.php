@@ -30,7 +30,7 @@
         <a href="{{ route('user.exchange.money') }}" class="quick-link-card">
             <span class="icon"><i class="las la-exchange-alt"></i></span>
             <p class="caption">@lang('Exchange')</p>
-        </a><!-- quick-link-card end -->
+        </a>
     </div>
 @endif
 

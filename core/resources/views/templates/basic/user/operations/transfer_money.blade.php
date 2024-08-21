@@ -21,9 +21,9 @@
                             <div class="p-4 border mb-4">
                                 <div class="row">
                                     <div class="col-lg-12 form-group">
-                                        <label class="mb-0">@lang('Your Wallet')</label>
+                                        <label class="mb-0">@lang('Your Currency')</label>
                                         <select class="select style--two currency" name="wallet_id" required>
-                                            <option value="" selected>@lang('Select Wallet')</option>
+                                            <option value="" selected>@lang('Select Currency')</option>
                                             @foreach ($wallets as $wallet)
                                                 <option value="{{ $wallet->id }}"
                                                     data-code="{{ $wallet->currency->currency_code }}"
