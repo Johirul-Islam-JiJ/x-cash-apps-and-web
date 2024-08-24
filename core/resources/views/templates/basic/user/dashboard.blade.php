@@ -1,6 +1,6 @@
 @extends($activeTemplate . 'layouts.user_master')
 @section('content')
-    <div class="col-lg-9 mt-lg-0 mt-5">
+    <div class="col-lg-10 mt-lg-0 mt-5">
         @if ($user->kv == 0 || $user->kv == 2)
             <div class="d-user-notification d-flex flex-wrap align-items-center mb-4 {{ @$kyc['bgColor'] }}">
                 <div class="icon  {{ @$kyc['iconBg'] }}">
@@ -24,16 +24,17 @@
         </div>
         <div class="push_notice"></div>
 
-        <div class="d-lg-flex d-none justify-content-between">
-            <h6 class="mb-3">@lang('Wallets')</h6>
-            <a href="{{ route('user.wallets') }}" class="font-size--14px text--base">@lang('More Wallets')
+        <div class="d-lg-flex justify-content-between">
+            <h6 class="mb-3">@lang('Currency')</h6>
+            <a href="{{ route('user.wallets') }}" class="font-size--14px text--base">@lang('More Currency')
                 <i class="las la-long-arrow-alt-right"></i>
             </a>
         </div>
 
-        <div class="row mb-5 gy-4 d-lg-flex d-none">
+        <div class="row mb-5 gy-4 justify-content-center">
             @foreach ($wallets as $wallet)
                 <div class="col-lg-4 col-md-6">
+
                     <div class="d-widget curve--shape style-two">
                         <div class="d-widget__content">
                             <i class="las la-wallet"></i>

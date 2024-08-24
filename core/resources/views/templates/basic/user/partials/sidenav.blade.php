@@ -43,6 +43,13 @@
                 </li>
             @endif
 
+            <li class="sidebar-menu-list__item">
+                <a class="sidebar-menu-list__link" href="{{ route('user.exchange.money') }}">
+                    <span class="icon"> <i class="las la-exchange-alt"></i></span>
+                    <span class="text">@lang('Exchange')</span>
+                </a>
+            </li>
+
             @if (module('transfer_money', $module)->status)
                 <li>
                     <a href="{{ route('user.transfer') }}" class="sidebar-menu-list__link">

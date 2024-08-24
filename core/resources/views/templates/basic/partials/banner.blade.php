@@ -2,7 +2,7 @@
     $banner = @getContent('banner.content', true)->data_values;
 @endphp
 
-<!-- style="background-image: url('{{ getImage('assets/images/frontend/banner/' .@$banner->background_image, '1920x1280') }}')" -->
+<!-- style="background-image: url('{{ getImage('assets/images/frontend/banner/' . @$banner->background_image, '1920x1280') }}')" -->
 
 <section class="hero bg_img">
     <div class="container">
@@ -19,9 +19,9 @@
                 </p>
                 <div class="btn--group wow fadeInUp" data-wow-duration="0.3" data-wow-delay="0.9s">
                     <a href="{{ @$banner->button_link }}" class="btn btn--base">{{ __(@$banner->button_name) }}</a>
-                    <a href="{{ @$banner->video_link }}" data-rel="lightcase:myCollection" class="video-btn">
-                        <span class="icon"><i class="las la-play"></i></span>
-                        <span class="text--base">{{ @__($banner->video_button_name) }}</span>
+
+                    <a href="" class="link-appstore">
+                        <img src="{{ asset('assets/global/images/playstore.png') }}" alt="">
                     </a>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 @php
     $content = @getContent('testimonial.content', true)->data_values;
-    $elements = @getContent('testimonial.element', orderById:true);
+    $elements = @getContent('testimonial.element', orderById: true);
 @endphp
 
 <section class="pt-100 pb-100">
@@ -19,36 +19,71 @@
                     </p>
                 </div>
             </div>
-        </div><!-- row end -->
+        </div>
+
+        <!-- row end -->
         <div class="row">
             <div class="col-lg-12">
-                <div class="testimonial-slide-area">
-                    <div class="thumb">
-                        <div class="thumb-slider">
-                            @foreach ($elements as $singleElement)
-                                <div class="single-slide">
-                                    <img 
-                                        src="{{ getImage('assets/images/frontend/testimonial/'. @$singleElement->data_values->author_image, '1080x620') }}" 
-                                        alt="@lang('img')"       
-                                        data-animation="fadeInUp" data-delay=".3s"
-                                    >
+                <div class="testimonial-sliderr">
+                    @foreach ($elements as $element)
+                        <div class="testimoinal-item">
+                            <p class="testimoinal-item-desc">{{ __(@$element->data_values->quote) }}</p>
+                            <div class="testimoinal-item-auth">
+                                <div class="testimoinal-item-image">
+                                    <img src="{{ getImage('assets/images/frontend/testimonial/' . @$element->data_values->author_image) }}"
+                                        alt="@lang('img')">
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    <div class="content">
-                        <div class="content-slider">
-                            @foreach ($elements as $element)
-                                <div class="single-slide">
-                                    <h3 class="name text-white">{{ __(@$element->data_values->author_name) }}</h3>
-                                    <span class="mt-1">{{ __(@$element->data_values->designation) }}</span>
-                                    <p class="mt-3">{{ __(@$element->data_values->quote) }}</p>
+
+                                <div class="testimoinal-item-content">
+                                    <h3 class="name">{{ __(@$element->data_values->author_name) }}</h3>
+                                    <span class="desi">{{ __(@$element->data_values->designation) }}</span>
                                 </div>
-                            @endforeach
+                            </div>
                         </div>
-                    </div>
-                </div><!-- testimonial-single end -->
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+
+@push('script')
+    <script>
+        $('.testimonial-sliderr').slick({
+            autoplay: true,
+            autoplaySpeed: 2000,
+            dots: false,
+            infinite: true,
+            speed: 300,
+            slidesToShow: 4,
+            arrows: false,
+            slidesToScroll: 1,
+            responsive: [{
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 3,
+                    }
+                },
+                {
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 3,
+                    }
+                },
+                {
+                    breakpoint: 767,
+                    settings: {
+                        slidesToShow: 2,
+                    }
+                },
+                {
+                    breakpoint: 575,
+                    settings: {
+                        slidesToShow: 1,
+                    }
+                }
+            ]
+        });
+    </script>
+@endpush
