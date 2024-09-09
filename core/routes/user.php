@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\ExchangeController;
 
 Route::namespace('User\Auth')->name('user.')->group(function () {
 
@@ -171,6 +172,11 @@ Route::middleware('auth')->name('user.')->group(function () {
             Route::controller('MoneyExchangeController')->middleware('module:money_exchange')->prefix('exchange')->name('exchange')->group(function(){
                 Route::get('/money', 'exchangeForm')->name('.money');
                 Route::post('/money', 'exchangeConfirm');
+            });
+            
+            //Exchange Controller
+            Route::controller('ExchangeController')->middleware('module:money_exchange')->prefix('currency/exchange')->name('currency.exchange')->group(function(){
+                Route::get('/', 'index')->name('.index');
             });
 
         });

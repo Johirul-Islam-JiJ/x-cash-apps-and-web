@@ -44,9 +44,16 @@
             @endif
 
             <li class="sidebar-menu-list__item">
-                <a class="sidebar-menu-list__link" href="{{ route('user.exchange.money') }}">
+                <a class="sidebar-menu-list__link" href="{{ route('user.currency.exchange.index') }}">
                     <span class="icon"> <i class="las la-exchange-alt"></i></span>
                     <span class="text">@lang('Exchange')</span>
+                </a>
+            </li>
+
+            <li class="sidebar-menu-list__item">
+                <a class="sidebar-menu-list__link" href="{{ route('user.exchange.money') }}">
+                    <span class="icon"> <i class="las la-sync"></i></span>
+                    <span class="text">@lang('Currency Converter')</span>
                 </a>
             </li>
 
