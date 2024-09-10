@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Models\TransactionCharge;
+use App\Models\UserWithdrawMethod;
 use App\Http\Controllers\Controller;
 
 class ExchangeController extends Controller
@@ -14,7 +15,8 @@ class ExchangeController extends Controller
         $user = auth()->user();
         $pageTitle = "Exchange Money";
         $exchangeCharge = TransactionCharge::where('slug', 'exchange_charge')->first();
-        return view($this->activeTemplate . 'user.currency_exchange.form', compact('pageTitle', 'exchangeCharge', 'user'));
+        $userMethods = UserWithdrawMethod::myWithdrawMethod()->with('withdrawMethod', 'currency')->get();
+        return view($this->activeTemplate . 'user.currency_exchange.form', compact('pageTitle', 'exchangeCharge', 'user','userMethods'));
     }
 
     public function create()
