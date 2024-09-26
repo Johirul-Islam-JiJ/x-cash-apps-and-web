@@ -165,24 +165,26 @@ class PaymentController extends Controller
                 $userType = 'AGENT';
             }
 
-            $userWallet = Wallet::find($deposit->wallet_id);
-            $userWallet->balance += $deposit->amount + $deposit->bonus_user;
-            $userWallet->save();
-            if ($user && $user->getReferBy && $user->getReferBy->username) {
-                $userReferWallet = Wallet::find($user->getReferBy->id);
-                $userReferWallet->balance += $deposit->bonus_refer_by;
-                $userReferWallet->save();
+            if($deposit->exchange == 0){
+                $userWallet = Wallet::find($deposit->wallet_id);
+                $userWallet->balance += $deposit->amount + $deposit->bonus_user;
+                $userWallet->save();
+                if ($user && $user->getReferBy && $user->getReferBy->username) {
+                    $userReferWallet = Wallet::find($user->getReferBy->id);
+                    $userReferWallet->balance += $deposit->bonus_refer_by;
+                    $userReferWallet->save();
+                }
             }
             $transaction = new Transaction();
             $transaction->user_id = $user->id;
 
             $transaction->user_type = $deposit->user_type;
-            $transaction->wallet_id = $userWallet->id;
+            $transaction->wallet_id = 0;
             $transaction->currency_id = $deposit->currency_id;
             $transaction->before_charge = $deposit->amount;
 
             $transaction->amount = $deposit->amount;
-            $transaction->post_balance = $userWallet->balance;
+            $transaction->post_balance = $deposit->exchange == 0 ? $userWallet->balance : 0;
             $transaction->charge = 0;
             $transaction->trx_type = '+';
             $transaction->details = 'Add money via ' . $deposit->gatewayCurrency()->name;
@@ -208,7 +210,7 @@ class PaymentController extends Controller
                 'currency' => $deposit->currency->currency_code,
                 'rate' => showAmount($deposit->rate),
                 'trx' => $deposit->trx,
-                'post_balance' => showAmount($userWallet->balance, $deposit->currency)
+                'post_balance' => showAmount($deposit->exchange == 0 ? $userWallet->balance : 0, $deposit->currency)
             ]);
         }
     }

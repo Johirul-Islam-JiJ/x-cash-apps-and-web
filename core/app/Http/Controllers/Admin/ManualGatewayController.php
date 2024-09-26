@@ -61,6 +61,7 @@ class ManualGatewayController extends Controller
         $gatewayCurrency->gateway_alias = strtolower(trim(str_replace(' ','_',$request->name)));
         $gatewayCurrency->currency = $request->currency;
         $gatewayCurrency->symbol = '';
+        $gatewayCurrency->rate = $getMethodCurrency->rate;
         $gatewayCurrency->method_code = $methodCode;
         $gatewayCurrency->min_amount = $request->min_limit;
         $gatewayCurrency->max_amount = $request->max_limit;
@@ -108,6 +109,7 @@ class ManualGatewayController extends Controller
         $singleCurrency->gateway_alias = strtolower(trim(str_replace(' ','_',$method->name)));
         $singleCurrency->currency = $request->currency;
         $singleCurrency->symbol = '';
+        $singleCurrency->rate = $getMethodCurrency->rate;
         $singleCurrency->min_amount = $request->min_limit;
         $singleCurrency->max_amount = $request->max_limit;
         $singleCurrency->fixed_charge = $request->fixed_charge;

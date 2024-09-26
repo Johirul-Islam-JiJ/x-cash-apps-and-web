@@ -5,26 +5,26 @@ use App\Http\Controllers\User\ExchangeController;
 
 Route::namespace('User\Auth')->name('user.')->group(function () {
 
-    Route::controller('LoginController')->group(function(){
+    Route::controller('LoginController')->group(function () {
         Route::get('/login', 'showLoginForm')->name('login');
         Route::post('/login', 'login');
         Route::get('logout', 'logout')->name('logout');
     });
 
-    Route::controller('RegisterController')->group(function(){
+    Route::controller('RegisterController')->group(function () {
         Route::get('register/{reference?}', 'showRegistrationForm')->name('register');
         Route::post('register', 'register')->middleware('registration.status');
         Route::post('check-mail', 'checkUser')->name('checkUser');
     });
 
-    Route::controller('ForgotPasswordController')->prefix('password')->name('password.')->group(function(){
+    Route::controller('ForgotPasswordController')->prefix('password')->name('password.')->group(function () {
         Route::get('reset', 'showLinkRequestForm')->name('request');
         Route::post('email', 'sendResetCodeEmail')->name('email');
         Route::get('code-verify', 'codeVerify')->name('code.verify');
         Route::post('verify-code', 'verifyCode')->name('verify.code');
     });
 
-    Route::controller('ResetPasswordController')->group(function(){
+    Route::controller('ResetPasswordController')->group(function () {
         Route::post('password/reset', 'reset')->name('password.update');
         Route::get('password/reset/{token}', 'showResetForm')->name('password.reset');
     });
@@ -32,7 +32,7 @@ Route::namespace('User\Auth')->name('user.')->group(function () {
 
 Route::middleware('auth')->name('user.')->group(function () {
     //authorization
-    Route::namespace('User')->controller('AuthorizationController')->group(function(){
+    Route::namespace('User')->controller('AuthorizationController')->group(function () {
         Route::get('authorization', 'authorizeForm')->name('authorization');
         Route::get('resend-verify/{type}', 'sendVerifyCode')->name('send.verify.code');
         Route::post('verify-email', 'emailVerification')->name('verify.email');
@@ -47,7 +47,7 @@ Route::middleware('auth')->name('user.')->group(function () {
 
         Route::middleware('registration.complete')->namespace('User')->group(function () {
 
-            Route::controller('UserController')->group(function(){
+            Route::controller('UserController')->group(function () {
                 Route::get('dashboard', 'home')->name('home');
                 Route::get('check/insight', 'checkInsight')->name('check.insight');
 
@@ -61,22 +61,22 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::post('twofactor/disable', 'disable2fa')->name('twofactor.disable');
 
                 //KYC
-                Route::get('kyc-form','kycForm')->name('kyc.form');
-                Route::get('kyc-data','kycData')->name('kyc.data');
-                Route::post('kyc-submit','kycSubmit')->name('kyc.submit');
+                Route::get('kyc-form', 'kycForm')->name('kyc.form');
+                Route::get('kyc-data', 'kycData')->name('kyc.data');
+                Route::post('kyc-submit', 'kycSubmit')->name('kyc.submit');
 
                 //Report
                 Route::any('deposit/history', 'depositHistory')->name('deposit.history');
-                Route::get('transactions','transactions')->name('transactions');
+                Route::get('transactions', 'transactions')->name('transactions');
 
-                Route::get('attachment-download/{filHash}','attachmentDownload')->name('attachment.download');
+                Route::get('attachment-download/{filHash}', 'attachmentDownload')->name('attachment.download');
 
                 Route::get('logout-other-devices', 'logoutOtherDevicesForm')->name('logout.other.devices.form');
                 Route::post('logout-other-devices', 'logoutOtherDevices')->name('logout.other.devices');
             });
 
             //Profile setting
-            Route::controller('ProfileController')->group(function(){
+            Route::controller('ProfileController')->group(function () {
                 Route::get('profile-setting', 'profile')->name('profile.setting');
                 Route::post('profile-setting', 'submitProfile');
                 Route::get('change-password', 'changePassword')->name('change.password');
@@ -84,8 +84,8 @@ Route::middleware('auth')->name('user.')->group(function () {
             });
 
             // Withdraw
-            Route::controller('UserWithdrawController')->prefix('withdraw')->name('withdraw')->group(function(){
-                Route::middleware('kyc')->group(function(){
+            Route::controller('UserWithdrawController')->prefix('withdraw')->name('withdraw')->group(function () {
+                Route::middleware('kyc')->group(function () {
                     Route::get('/', 'withdraw');
 
                     Route::get('/methods', 'withdrawMethods')->name('.methods');
@@ -106,7 +106,7 @@ Route::middleware('auth')->name('user.')->group(function () {
             });
 
             //Money out
-            Route::controller('MoneyOutController')->middleware(['module:money_out', 'kyc'])->group(function(){
+            Route::controller('MoneyOutController')->middleware(['module:money_out', 'kyc'])->group(function () {
                 Route::post('/agent/exist', 'checkUser')->name('agent.check.exist');
                 Route::get('/money-out', 'moneyOut')->name('money.out');
                 Route::post('/money-out', 'moneyOutConfirm');
@@ -114,7 +114,7 @@ Route::middleware('auth')->name('user.')->group(function () {
             });
 
             //Make payment
-            Route::controller('MakePaymentController')->middleware(['module:make_payment', 'kyc'])->group(function(){
+            Route::controller('MakePaymentController')->middleware(['module:make_payment', 'kyc'])->group(function () {
                 Route::post('/merchant/exist', 'checkUser')->name('merchant.check.exist');
                 Route::get('/make-payment', 'paymentFrom')->name('payment');
                 Route::post('/make-payment', 'paymentConfirm');
@@ -122,7 +122,7 @@ Route::middleware('auth')->name('user.')->group(function () {
             });
 
             //Transfer money
-            Route::controller('UserOperationController')->middleware(['module:transfer_money', 'kyc'])->group(function(){
+            Route::controller('UserOperationController')->middleware(['module:transfer_money', 'kyc'])->group(function () {
                 Route::get('/transfer/money', 'transfer')->name('transfer');
                 Route::post('/transfer/money', 'transferMoney');
                 Route::get('/transfer/money-done', 'transferMoneyDone')->name('transfer.done');
@@ -133,7 +133,7 @@ Route::middleware('auth')->name('user.')->group(function () {
             Route::get('/wallets', 'UserController@wallets')->name('wallets');
 
             //Request Money
-            Route::controller('UserOperationController')->middleware('module:request_money')->group(function(){
+            Route::controller('UserOperationController')->middleware('module:request_money')->group(function () {
                 Route::get('/requests', 'allRequests')->name('requests');
                 Route::get('/my/requested/history', 'requestedHistory')->name('request.money.history');
                 Route::get('/request/money', 'requestMoney')->name('request.money');
@@ -144,7 +144,7 @@ Route::middleware('auth')->name('user.')->group(function () {
             });
 
             //Invoice
-            Route::controller('InvoiceController')->middleware('module:create_invoice')->prefix('invoice')->name('invoice')->group(function(){
+            Route::controller('InvoiceController')->middleware('module:create_invoice')->prefix('invoice')->name('invoice')->group(function () {
                 Route::get('/all', 'invoices')->name('.all');
                 Route::get('/create', 'createInvoice')->name('.create');
                 Route::post('/create', 'createInvoiceConfirm');
@@ -158,7 +158,7 @@ Route::middleware('auth')->name('user.')->group(function () {
             });
 
             //Voucher
-            Route::controller('VoucherController')->middleware('module:create_voucher')->group(function(){
+            Route::controller('VoucherController')->middleware('module:create_voucher')->group(function () {
                 Route::get('/voucher/list', 'userVoucherList')->name('voucher.list');
                 Route::get('/create/voucher', 'userVoucher')->name('voucher.create')->middleware('kyc');
                 Route::post('/create/voucher', 'userVoucherCreate')->middleware('kyc');
@@ -169,26 +169,28 @@ Route::middleware('auth')->name('user.')->group(function () {
             });
 
             //Exchange money
-            Route::controller('MoneyExchangeController')->middleware('module:money_exchange')->prefix('exchange')->name('exchange')->group(function(){
+            Route::controller('MoneyExchangeController')->middleware('module:money_exchange')->prefix('exchange')->name('exchange')->group(function () {
                 Route::get('/money', 'exchangeForm')->name('.money');
                 Route::post('/money', 'exchangeConfirm');
             });
-            
-            //Exchange Controller
-            Route::controller('ExchangeController')->middleware('module:money_exchange')->prefix('currency/exchange')->name('currency.exchange')->group(function(){
-                Route::get('/', 'index')->name('.index');
-            });
 
+            //Exchange Controller
+            Route::controller('ExchangeController')->middleware('module:money_exchange')->prefix('currency/exchange')->name('currency.exchange')->group(function () {
+                Route::get('/', 'index')->name('.index');
+                Route::post('/insert', 'exchangeInsert')->name('.store');
+                Route::get('confirm', 'depositConfirm')->name('.confirm');
+                Route::get('manual', 'manualDepositConfirm')->name('.manual.confirm');
+                Route::post('manual', 'manualDepositUpdate')->name('.manual.update');
+            });
         });
 
         // Payment
-        Route::middleware('registration.complete')->prefix('deposit')->controller('Gateway\PaymentController')->group(function(){
+        Route::middleware('registration.complete')->prefix('deposit')->controller('Gateway\PaymentController')->group(function () {
             Route::any('/', 'deposit')->name('deposit');
             Route::post('insert', 'depositInsert')->name('deposit.insert');
             Route::get('confirm', 'depositConfirm')->name('deposit.confirm');
             Route::get('manual', 'manualDepositConfirm')->name('deposit.manual.confirm');
             Route::post('manual', 'manualDepositUpdate')->name('deposit.manual.update');
         });
-
     });
 });

@@ -1,529 +1,202 @@
 @extends($activeTemplate . 'layouts.user_master')
 @section('content')
-    @php
-        $class = '';
-        if (userGuard()['type'] == 'AGENT' || userGuard()['type'] == 'MERCHANT') {
-            $class = 'mt-5';
-        }
-    @endphp
+@php
+$class = '';
+if (userGuard()['type'] == 'AGENT' || userGuard()['type'] == 'MERCHANT') {
+$class = 'mt-5';
+}
+@endphp
 
 
-    <div class="col-xl-10">
+<div class="col-xl-12">
 
 
 
 
-        <div class="card style--two">
-            <div class="card-header d-flex flex-wrap align-items-center justify-content-center">
-                <div class="bank-icon  me-2">
-                    <i class="las la-wallet"></i>
-                </div>
-                <h4 class="fw-normal">@lang($pageTitle)</h4>
+    <div class="card style--two">
+        <div class="card-header d-flex flex-wrap align-items-center justify-content-center">
+            <div class="bank-icon  me-2">
+                <i class="las la-wallet"></i>
             </div>
-
-            {{-- Ad Money --}}
-
-            <form action="{{ route(strtolower(userGuard()['type']) . '.deposit.insert') }}" method="POST" id="form">
-                @csrf
-                <div class="row justify-content-center gy-4 {{ $class }}">
-                    <div class="col-lg-6">
-                        <div class="add-money-card">
-                            <h4 class="title"><i class="las la-plus-circle"></i> @lang('Add Money')</h4>
-                            <div class="form-group">
-                                <label>@lang('Select Your Wallet')</label>
-                                <input type="hidden" name="currency">
-                                <input type="hidden" name="currency_id">
-                                <select class="select" name="wallet_id" id="wallet" required>
-                                    <option>@lang('Select Currency')</option>
-                                    @foreach (userGuard()['user']->wallets as $wallet)
-                                        <option value="{{ $wallet->id }}"
-                                            data-code="{{ $wallet->currency->currency_code }}"
-                                            data-sym="{{ $wallet->currency->currency_symbol }}"
-                                            data-rate="{{ $wallet->currency->rate }}"
-                                            data-currency="{{ $wallet->currency->id }}"
-                                            data-type="{{ $wallet->currency->currency_type }}"
-                                            data-gateways="{{ $wallet->gateways() }}">
-                                            @lang($wallet->currency->currency_code)
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>@lang('Select Gateway')</label>
-                                <select class="select gateway" name="method_code" disabled required>
-                                    <option value="">@lang('Select Gateway')</option>
-                                </select>
-                                <code class="text--danger gateway-msg"></code>
-                            </div>
-                            <div class="form-group mb-0">
-                                <label>@lang('Amount')</label>
-                                <div class="input-group">
-                                    <input class="form--control amount" type="number" step="any" name="amount"
-                                        disabled placeholder="Enter Amount" required>
-                                    <span class="input-group-text curr_code"></span>
-                                </div>
-                                <p><code class="text--warning limit">@lang('limit') : 0.00 <span
-                                            class="curr_code"></span></code>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4">
-                        <div class="add-money-card style--two">
-                            <h4 class="title"><i class="lar la-file-alt"></i> @lang('Summery')</h4>
-                            <div class="add-moeny-card-middle">
-                                <ul class="add-money-details-list">
-                                    <li>
-                                        <span class="caption">@lang('Amount')</span>
-                                        <div class="value">
-                                            <span class="sym">{{ $general->cur_sym }}</span><span
-                                                class="show-amount">0.00</span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <span class="caption">@lang('Charge')</span>
-                                        <div class="value">
-                                            <span class="sym">{{ $general->cur_sym }}</span><span
-                                                class="charge">0.00</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <div class="add-money-details-bottom">
-                                    <span class="caption">@lang('Payable')</span>
-                                    <div class="value">
-                                        <span class="sym">{{ $general->cur_sym }}</span><span
-                                            class="payable">0.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit"
-                                class="btn btn-md btn--base w-100 mt-3 req_confirm">@lang('Proceed')</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
-
-            {{-- Currency Converter --}}
-            <div class="card-body p-4">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <form action="" method="POST" id="form">
-                            @csrf
-                            <div class="d-widget">
-                                <div class="d-widget__header">
-                                    <h6>@lang('Exchange')</h4>
-                                </div>
-                                <div class="d-widget__content px-5">
-                                    <div class="p-4 border mb-4">
-                                        <div class="row">
-                                            <div class="col-lg-12 form-group">
-                                                <label class="mb-0">@lang('Amount')<span class="text--danger">*</span>
-                                                </label>
-                                                <input type="number" step="any" class="form--control style--two amount"
-                                                    name="amount" placeholder="0.00" required value="{{ old('amount') }}">
-                                            </div>
-                                        </div><!-- row end -->
-                                    </div>
-
-                                    <div class="p-4 border mb-4">
-                                        <div class="row">
-                                            <div class="col-lg-6 form-group">
-                                                <label class="mb-0">@lang('From Currency')<span
-                                                        class="text--danger">*</span></label>
-                                                <select class="select style--two from_currency" name="from_wallet_id"
-                                                    required>
-                                                    <option value="">@lang('From Currency')</option>
-                                                    @foreach ($user->wallets()->where('balance', '>', 0)->get() as $fromWallet)
-                                                        <option value="{{ $fromWallet->id }}"
-                                                            data-code="{{ $fromWallet->currency->currency_code }}"
-                                                            data-rate="{{ $fromWallet->currency->rate }}"
-                                                            data-type="{{ $fromWallet->currency->currency_type }}">
-                                                            {{ $fromWallet->currency->currency_code }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-lg-6 form-group">
-                                                <label class="mb-0">@lang('To Currency')<span
-                                                        class="text--danger">*</span></label>
-                                                <select class="select style--two to_currency" name="to_wallet_id"
-                                                    required>
-                                                    <option value="">@lang('To Currency')</option>
-                                                    @foreach ($user->wallets()->get() as $toWallet)
-                                                        <option value="{{ $toWallet->id }}"
-                                                            data-code="{{ $toWallet->currency->currency_code }}"
-                                                            data-rate="{{ $toWallet->currency->rate }}"
-                                                            data-type="{{ $toWallet->currency->currency_type }}">
-                                                            {{ $toWallet->currency->currency_code }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div><!-- row end -->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-center">
-                                <button type="submit"
-                                    class="btn btn-md btn--base mt-4 exchange w-100">@lang('Exchange')</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-
-            {{-- Withdraw --}}
-
-            <div class="card-body px-sm-5 py-sm-4">
-                <div class="row gy-4">
-                    @forelse ($userMethods as $method)
-                        <div class="col-lg-6">
-                            <div class="bank-card align-items-center rounded-3 has--link">
-                                <span
-                                    class="card-badge {{ $method->status ? 'success badge badge--success' : 'warning badge badge--warning' }}">
-                                    {{ $method->status ? __('Enabled') : __('Disabled') }}
-                                </span>
-                                <a href="javascript:void(0)" class="item--link withdraw"
-                                    data-currency="{{ $method->currency->currency_code }}"
-                                    data-method="{{ $method }}"></a>
-                                <div class="bank-card__icon">
-                                    <i class="las la-wallet"></i>
-                                </div>
-                                <div class="bank-card__content">
-                                    <h6 class="fw-normal">@lang($method->name)</h6>
-                                    <span class="mt-1 small d-block text--primary">
-                                        {{ @$method->withdrawMethod->name }} -
-                                        {{ @$method->currency->currency_code }}
-                                    </span>
-                                    <span class="font-size--14px d-block">@lang('Limit :')
-                                        {{ showAmount($method->withdrawMethod->min_limit / $method->currency->rate, $method->currency) }}
-                                        ~
-                                        {{ showAmount($method->withdrawMethod->max_limit / $method->currency->rate, $method->currency) }}
-                                        {{ $method->currency->currency_code }}</span>
-                                    <span class="font-size--14px d-block">@lang('Charge :')
-                                        {{ showAmount($method->withdrawMethod->fixed_charge / $method->currency->rate, $method->currency) }}
-                                        {{ $method->currency->currency_code }} +
-                                        {{ $method->withdrawMethod->percent_charge }}%
-                                    </span>
-                                </div>
-                            </div><!-- bank-card end -->
-                        </div>
-                    @empty
-                        <div class="col-lg-6">
-                            <div class="bank-card approved warning align-items-center rounded-3 has--link">
-                                <a href="#0" class="item--link"></a>
-                                <div class="bank-card__icon">
-                                    <i class="las la-university"></i>
-                                </div>
-                                <div class="bank-card__content">
-                                    @lang('No Withdraw Methods')
-                                </div>
-                            </div><!-- bank-card end -->
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-
+            <h4 class="fw-normal">@lang($pageTitle)</h4>
         </div>
 
-    </div>
+        {{-- Ad Money --}}
 
-
-
-
-
-    <div class="modal fade" id="withdraw" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="depositModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form action="{{ route('user.withdraw.money') }}" method="post" id="form">
-                @csrf
-                <div class="modal-content border-0 rounded-0">
-                    <div class="modal-header">
-                        <h5 class="modal-title fw-normal method-name" id="depositModalLabel">@lang('Withdraw Amount')</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" name="method_id" class="method">
-                        <input type="hidden" name="user_method_id" class="user_method">
-                        <div class="input-group mb-3">
-                            <input id="amount" type="text" class="form--control"
-                                onkeyup="this.value = this.value.replace (/^\.|[^\d\.]/g, '')" name="amount"
-                                placeholder="0.00" required>
-                            <span class="input-group-text base_symbol"></span>
+        <form action="{{ route(strtolower(userGuard()['type']) . '.currency.exchange.store') }}" method="POST" id="form">
+            @csrf
+            <div class="row justify-content-center gy-4 {{ $class }}">
+                <!-- Send From Section -->
+                <div class="col-lg-6">
+                    <div class="add-money-card">
+                        <h4 class="title"><i class="las la-paper-plane"></i> @lang('Send From')</h4>
+                        <input type="hidden" name="currency">
+                        <input type="hidden" name="currency_id">
+                        <div class="form-group">
+                            <label>@lang('Select Gateway')</label>
+                            <select class="select send-gateway" name="method_code" required>
+                                <option value="">@lang('Select Gateway')</option>
+                                @foreach ($gatewayCurrency as $data)
+                                <option value="{{ $data->method_code }}"
+                                    data-gateway='@json($data)'>{{ __($data->name) }}</option>
+                                @endforeach
+                            </select>
+                            <code class="text--danger gateway-msg"></code>
                         </div>
-                    </div>
-                    <div class="modal-footer p-0 border-0">
-                        <button type="submit" class="btn btn--primary btn-md m-0 w-100 rounded-0 req_confirm">
-                            <i class="las la-wallet font-size--18px"></i> @lang('Submit')
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 
-
-    <div class="modal fade" id="confirm" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered " role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title">@lang('Exchange Calculation')</h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center p-0">
-                    <div class="d-widget border-start-0 shadow-sm">
-                        <div class="d-widget__content">
-                            <ul class="cmn-list-two text-center mt-4">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <strong class="from_curr"> </strong>
-                                    <strong class="text--base">@lang('TO')</strong>
-                                    <strong class="to_curr"></strong>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span class="from_curr_val"></span>
-                                    <strong>---------------------------------------------------</strong>
-                                    <span class="to_curr_val"></span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="d-widget__footer text-center border-0 pb-3">
-                            <button type="submit" class="btn btn-md w-100 d-block btn--base req_confirm"
-                                form="form">@lang('Confirm')
-                                <i class="las la-long-arrow-alt-right"></i>
-                            </button>
+                        <div class="form-group mb-0">
+                            <label>@lang('Amount')</label>
+                            <div class="input-group">
+                                <input class="form--control send-amount" type="number" step="any" name="amount"
+                                    disabled placeholder="Enter Amount" required>
+                                <span class="input-group-text send-curr_code"></span>
+                            </div>
+                            <p><code class="text--warning limit send-limit">@lang('limit') : 0.00 <span
+                                        class="send-curr_code"></span></code></p>
+                            <p>@lang('Processing Fees'): <span class="send-processing-fee">0.00</span> <span
+                                    class="send-curr_code"></span></p>
+                            <p>@lang('Total to Send'): <span class="send-final-amount">0.00</span> <span
+                                    class="send-curr_code"></span></p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Received To Section -->
+                <div class="col-lg-6">
+                    <div class="add-money-card">
+                        <h4 class="title"><i class="las la-download"></i> @lang('Received To')</h4>
+
+                        <div class="form-group">
+                            <label>@lang('Select Gateway')</label>
+                            <select class="select receive-gateway" name="withdraw_method_id" required>
+                                <option value="">@lang('Select Gateway')</option>
+                                @foreach ($withdrawMethod as $data)
+                                <option value="{{ $data->id }}"
+                                    data-gateway='@json($data)'>{{ __($data->name) }}</option>
+                                @endforeach
+                            </select>
+                            <code class="text--danger gateway-msg"></code>
+                        </div>
+
+                        <div class="form-group mb-0">
+                            <label>@lang('Amount')</label>
+                            <div class="input-group">
+                                <input class="form--control receive-amount" type="number" value="" step="any" name="withdraw_amount"
+                                    disabled placeholder="Received Amount" required>
+                                <span class="input-group-text receive-curr_code"></span>
+                            </div>
+                            <p><code class="text--warning limit receive-limit">@lang('limit') : 0.00 <span
+                                        class="receive-curr_code"></span></code></p>
+                            <p>@lang('Processing Fees'): <span class="receive-processing-fee">0.00</span> <span
+                                    class="receive-curr_code"></span></p>
+                            <p>@lang('Total to Receive'): <span class="receive-final-amount">0.00</span> <span
+                                    class="receive-curr_code"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn--base w-100">@lang('Exchange')</button>
             </div>
-        </div>
+        </form>
+
     </div>
+</div>
+
 @endsection
 
 @push('script')
-    {{-- Deposit Money --}}
-    <script>
-        'use strict';
-        (function($) {
+<script>
+    "use strict";
+    (function($) {
+        let sendAmount = 0;
+        let sendGateway = null,
+            receiveGateway = null;
+        let sendMinAmount, sendMaxAmount, receiveMinAmount, receiveMaxAmount;
 
-            var wallet = null;
+        $('.send-amount').on('input', function(e) {
+            sendAmount = parseFloat($(this).val()) || 0;
+            updateSendAmount();
+            updateReceiveAmount();
+        });
 
-            $('#wallet').on('change', function() {
+        $('.send-gateway').on('change', function(e) {
+            let gatewayElement = $('.send-gateway option:selected');
+            sendGateway = gatewayElement.data('gateway');
+            sendMinAmount = sendGateway.min_amount;
+            sendMaxAmount = sendGateway.max_amount;
 
-                if ($(this).find('option:selected').val() == '') {
-                    return false
-                }
+            // Update the currency and enable the amount field
+            $(".send-curr_code").text(sendGateway.currency);
+            $('input[name=currency]').val(sendGateway.currency)
+            $(".send-amount").removeAttr('disabled');
+            updateSendAmount();
+        });
 
-                wallet = $(this);
+        // Event for handling the selection of the "Receive To" gateway
+        $('.receive-gateway').on('change', function(e) {
+            let gatewayElement = $('.receive-gateway option:selected');
+            receiveGateway = gatewayElement.data('gateway');
+            receiveMinAmount = receiveGateway.min_limit;
+            receiveMaxAmount = receiveGateway.max_limit;
 
-                var gateways = $(this).find('option:selected').data('gateways')
-                var sym = $(this).find('option:selected').data('sym')
-                var code = $(this).find('option:selected').data('code')
-                var rate = $(this).find('option:selected').data('rate')
+            // Update the currency and enable the amount field
+            $(".receive-curr_code").text(receiveGateway.currency);
+           
+            updateReceiveAmount();
+        });
 
-                $('.curr_code').text(code)
-                $('.sym').text(sym)
-                $('input[name=currency]').val(code)
-                $('input[name=currency_id]').val($(this).find('option:selected').data('currency'))
+        // Function to calculate and update the "Send From" total with charges
+        function updateSendAmount() {
+            if (!sendGateway) return;
 
-                $('.gateway').removeAttr('disabled')
-                $('.gateway').children().remove()
-                var html = `<option value="">@lang('Select Gateway')</option>`;
+            let percentCharge = parseFloat(sendGateway.percent_charge) || 0;
+            let fixedCharge = parseFloat(sendGateway.fixed_charge) || 0;
+            let totalPercentCharge = (sendAmount / 100) * percentCharge;
+            let totalCharge = totalPercentCharge + fixedCharge;
+            let totalToSend = sendAmount + totalCharge;
 
-                if (gateways.length > 0) {
-                    $.each(gateways, function(i, val) {
-                        html +=
-                            ` <option data-max="${val.max_amount}" data-min="${val.min_amount}" data-fixcharge = "${val.fixed_charge}" data-percent="${val.percent_charge}" data-rate="${rate}" value="${val.method_code}">${val.name}</option>`
-                    });
-                    $('.gateway').append(html)
-                    $('.gateway-msg').text('')
+            $(".send-final-amount").text(totalToSend.toFixed(2));
+            $(".send-processing-fee").text(totalCharge.toFixed(2));
+            $(".send-limit").text(`${sendMinAmount} - ${sendMaxAmount}`);
 
-                } else {
-                    $('.gateway').attr('disabled', true)
-                    $('.gateway').append(html)
-                    $('.gateway-msg').text('No gateway found with this currency.')
-                }
-
-            })
-
-            $('.gateway').on('change', function() {
-
-                if ($('.gateway option:selected').val() == '') {
-                    $('.amount').attr('disabled', true)
-                    $('.charge').text('0.00')
-                    $('.payable').text(parseFloat($('.amount').val()))
-                    $('.limit').text('limit : 0.00 USD')
-                    return false
-                }
-
-                $('.amount').removeAttr('disabled')
-                var amount = $('.amount').val() ? parseFloat($('.amount').val()) : 0;
-                var code = $(wallet).find('option:selected').data('code')
-
-                var type = $(wallet).find('option:selected').data('type')
-
-                var rate = parseFloat($('.gateway option:selected').data('rate'))
-                var min = parseFloat($('.gateway option:selected').data('min'))
-                var max = parseFloat($('.gateway option:selected').data('max'))
-
-                min = min / rate;
-                max = max / rate;
-
-                var fixed = parseFloat($('.gateway option:selected').data('fixcharge'))
-                var pCharge = parseFloat($('.gateway option:selected').data('percent'))
-                var percent = (amount * parseFloat($('.gateway option:selected').data('percent'))) / 100
-
-                var totalCharge = fixed + percent
-                var totalAmount = amount + totalCharge
-                var precesion = 0;
-
-                if (type == 1) {
-                    precesion = 2;
-                } else {
-                    precesion = 8;
-                }
-
-                $('.charge').text(totalCharge.toFixed(precesion))
-                $('.payable').text(totalAmount.toFixed(precesion))
-                $('.limit').text('limit : ' + min.toFixed(precesion) + ' ~ ' + max.toFixed(precesion) + ' ' +
-                    code)
-
-                $('.f_charge').text(fixed)
-                $('.p_charge').text(pCharge)
-
-            })
-
-            $('.amount').on('keyup', function() {
-                var amount = parseFloat($(this).val())
-
-                var type = $(wallet).find('option:selected').data('type')
-                var code = $(wallet).find('option:selected').data('code')
-                var fixed = parseFloat($('.gateway option:selected').data('fixcharge'))
-
-                var percent = (amount * parseFloat($('.gateway option:selected').data('percent'))) / 100
-                var totalCharge = fixed + percent
-                var totalAmount = amount + totalCharge
-                var precesion = 0;
-
-                if (type == 1) {
-                    precesion = 2;
-                } else {
-                    precesion = 8;
-                }
-
-                if (!isNaN(amount)) {
-                    $('.show-amount').text(amount.toFixed(precesion))
-                    $('.charge').text(totalCharge.toFixed(precesion))
-                    $('.payable').text(totalAmount.toFixed(precesion))
-                } else {
-                    $('.show-amount').text('0.00')
-                    $('.charge').text('0.00')
-                    $('.payable').text('0.00')
-
-                }
-            })
-
-            $('.req_confirm').on('click', function() {
-                if ($('.amount').val() == '' || $('.gateway option:selected').val() == '' || $(wallet).find(
-                        'option:selected').val() == '') {
-                    notify('error', 'All fields are required')
-                    return false
-                }
-                $('#form').submit()
-                $(this).attr('disabled', true)
-            })
-
-        })(jQuery);
-    </script>
-
-    {{-- Currency converter --}}
-    <script>
-        'use strict';
-        (function($) {
-            $('.to_currency').on('change', function() {
-                var fromCurr = $('.from_currency option:selected').val()
-                if ($('.to_currency option:selected').val() == fromCurr) {
-                    notify('error', 'Can\'t exchange within same wallet.')
-                    $('.exchange').attr('disabled', true);
-                } else {
-                    $('.exchange').attr('disabled', false);
-                }
-
-            })
-
-            $('#form').on('submit', function() {
-
-                var confirmMdoal = $('#confirm');
-
-                if (!confirmMdoal.is(':visible')) {
-
-                    var amount = $('.amount').val();
-                    if (amount == '') {
-                        notify('error', 'Please provide the amount first.')
-                        return false
-                    }
-                    var fromCurr = $('.from_currency option:selected').data('code')
-                    var toCurr = $('.to_currency option:selected').data('code')
-                    if (!fromCurr || !toCurr) {
-                        notify('error', 'Please select the currencies.')
-                        return false
-                    }
-                    var toCurrType = $('.to_currency option:selected').data('type')
-                    var fromCurrRate = parseFloat($('.from_currency option:selected').data('rate'))
-                    var baseCurrAmount = amount * fromCurrRate;
-                    var toCurrRate = parseFloat($('.to_currency option:selected').data('rate'))
-
-                    if (toCurrType == 1) {
-                        var toCurrAmount = (baseCurrAmount / toCurrRate).toFixed(2);
-                    } else {
-                        var toCurrAmount = (baseCurrAmount / toCurrRate).toFixed(8);
-                    }
-
-                    $('#confirm').find('.from_curr').text(fromCurr)
-                    $('#confirm').find('.to_curr').text(toCurr)
-                    $('#confirm').find('.from_curr_val').text(parseFloat(amount))
-                    $('#confirm').find('.to_curr_val').text(toCurrAmount)
-                    $('#confirm').modal('show')
-
-                    confirmMdoal.modal('show');
-                    return false;
-                }
-
-            });
-
-            var old = @json(session()->getOldInput());
-            if (old.length != 0) {
-                $('select[name=from_wallet_id]').val(old.from_wallet_id);
-                $('select[name=to_wallet_id]').val(old.to_wallet_id);
+            if (sendAmount < sendMinAmount || sendAmount > sendMaxAmount) {
+                $(".deposit-form button[type=submit]").attr('disabled', true);
+            } else {
+                $(".deposit-form button[type=submit]").removeAttr('disabled');
             }
+        }
 
-        })(jQuery);
-    </script>
+        // Function to calculate and update the "Receive To" total after deducting charges
+        function updateReceiveAmount() {
+            if (!receiveGateway || sendAmount === 0) return;
 
-    {{-- Withdraw --}}
+            let percentCharge = parseFloat(receiveGateway.percent_charge) || 0;
+            let fixedCharge = parseFloat(receiveGateway.fixed_charge) || 0;
+            let totalPercentCharge = (sendAmount / 100) * percentCharge;
+            let totalCharge = totalPercentCharge + fixedCharge;
+            let totalReceived = sendAmount - totalCharge;
+            let rate = receiveGateway.rate;
+            let rcv = totalReceived * rate;
+            let chrg = totalCharge * rate;
 
-    <script>
-        'use strict';
-        (function($) {
-            $('.withdraw').on('click', function() {
-                var code = $(this).data('currency')
-                var method = $(this).data('method')
-                $('#withdraw').find('.base_symbol').text(code)
-                $('#withdraw').find('.method').val(method.method_id)
-                $('#withdraw').find('.user_method').val(method.id)
-                $('#withdraw').find('.user_method').val(method.id)
-                $('#withdraw').modal('show')
-            })
+            
+            $(".receive-amount").val(rcv.toFixed(2));
 
-            $('.req_confirm').on('click', function() {
-                if ($('#amount').val() == '') {
-                    return false;
-                }
-                $('#form').submit()
-                $(this).attr('disabled', true)
-            })
-        })(jQuery);
-    </script>
+            $(".receive-final-amount").text(rcv.toFixed(2));
+            $(".receive-processing-fee").text(chrg.toFixed(2));
+            $(".receive-limit").text(`${receiveMinAmount} - ${receiveMaxAmount}`);
+
+            if (sendAmount < receiveMinAmount || sendAmount > receiveMaxAmount) {
+                $(".withdraw-form button[type=submit]").attr('disabled', true);
+            } else {
+                $(".withdraw-form button[type=submit]").removeAttr('disabled');
+            }
+        }
+
+        // Initialize with selected values (if any)
+        $('.send-gateway').change();
+        $('.receive-gateway').change();
+
+    })(jQuery);
+</script>
 @endpush
