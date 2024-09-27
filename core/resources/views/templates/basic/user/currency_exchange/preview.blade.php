@@ -39,14 +39,14 @@
                                             <ul class="cmn-list-two text-center">
                                                 <li>
                                                     @lang('Requested Amount '):
-                                                    <strong>{{showAmount($withdraw->amount)}} </strong> {{$withdraw->currency}}
+                                                    <strong>{{showAmount($withdraw->amount * $withdraw->rate)}} </strong> {{$withdraw->currency}}
                                                 </li>
                                                 <li>
                                                     @lang('Withdrawal Charge '):
-                                                    <strong>{{showAmount($withdraw->charge)}}</strong> {{$withdraw->currency}}
+                                                    <strong>{{showAmount($withdraw->charge * $withdraw->rate)}}</strong> {{$withdraw->currency}}
                                                 </li>
                                                 <li>
-                                                    @lang('You will get '): <strong> {{showAmount($withdraw->final_amount)}}</strong> {{$withdraw->currency}}
+                                                    @lang('You will get '): <strong> {{showAmount($withdraw->final_amount * $withdraw->rate)}}</strong> {{$withdraw->currency}}
                                                 </li>
                                                 <li>
                                                     @lang('Money Will be send to your withdraw methods. '): <strong> if not selected, select it as soon as possible.</strong>

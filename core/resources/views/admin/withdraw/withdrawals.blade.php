@@ -109,10 +109,10 @@
 
 
                                 <td>
-                                    {{ showAmount($withdraw->amount,$general->currency) }} {{ __($withdraw->curr->currency_code) }} - <span class="text-danger" title="@lang('charge')">{{ showAmount($withdraw->charge,$general->currency)}} </span>
+                                    {{ showAmount($withdraw->amount * $withdraw->rate) }} {{ __($withdraw->currency) }} - <span class="text-danger" title="@lang('charge')">{{ showAmount($withdraw->charge * $withdraw->rate)}} {{$withdraw->currency}}</span>
                                      <br>
                                      <strong title="@lang('Amount after charge')">
-                                     {{ showAmount($withdraw->amount-$withdraw->charge,$general->currency) }} {{ __($withdraw->curr->currency_code) }}
+                                     {{ showAmount($withdraw->final_amount * $withdraw->rate) }} {{ __($withdraw->currency) }}
                                      </strong>
                                  </td>
 

@@ -123,6 +123,7 @@ class ExchangeController extends Controller
         $withdraw = new Withdrawal();
         $withdraw->method_id = $withdrawMethod->id;
         $withdraw->user_id = $user->id;
+        $withdraw->user_type = userGuard()['type'];
         $withdraw->amount = $request->amount;
         $withdraw->currency = $withdrawMethod->currency;
         $withdraw->exchange = 1;
