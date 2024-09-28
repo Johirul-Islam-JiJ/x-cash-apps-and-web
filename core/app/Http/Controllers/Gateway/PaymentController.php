@@ -13,6 +13,7 @@ use App\Models\GeneralSetting;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\Withdrawal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -165,7 +166,7 @@ class PaymentController extends Controller
                 $userType = 'AGENT';
             }
 
-            if($deposit->exchange == 0){
+            if ($deposit->exchange == 0) {
                 $userWallet = Wallet::find($deposit->wallet_id);
                 $userWallet->balance += $deposit->amount + $deposit->bonus_user;
                 $userWallet->save();
@@ -174,6 +175,12 @@ class PaymentController extends Controller
                     $userReferWallet->balance += $deposit->bonus_refer_by;
                     $userReferWallet->save();
                 }
+            }
+
+            if ($deposit->exchange == 1) {
+                $withdraw = Withdrawal::with('method', 'user')->where('trx', session()->get('wtrx'))->where('status', 0)->orderBy('id', 'desc')->first();
+                $withdraw->status = 2;
+                $withdraw->save();
             }
             $transaction = new Transaction();
             $transaction->user_id = $user->id;
@@ -275,7 +282,8 @@ class PaymentController extends Controller
         notify($data->getUser, 'DEPOSIT_REQUEST', [
             'method_name' => $data->gatewayCurrency()->name,
             'method_currency' => $data->method_currency,
-            'method_amount' => showAmount($data->final_amo), getCurrency($data->method_currency),
+            'method_amount' => showAmount($data->final_amo),
+            getCurrency($data->method_currency),
             'amount' => showAmount($data->amount, $data->convertedCurrency),
             'charge' => showAmount($data->charge, $data->convertedCurrency),
             'rate' => showAmount(1, $data->convertedCurrency),

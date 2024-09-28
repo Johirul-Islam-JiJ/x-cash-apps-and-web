@@ -29,9 +29,9 @@ class ExchangeController extends Controller
         $pageTitle = "Exchange Money";
 
         $gatewayCurrency = GatewayCurrency::whereHas('method', function ($gate) {
-            $gate->where('status', 1)->where('method_code', '>=', 1000);
+            $gate->where('status', 1);
         })->with('method')->orderBy('name')->get();
-
+        
         $withdrawMethod = WithdrawMethod::active()->get();
 
         $exchangeCharge = TransactionCharge::where('slug', 'exchange_charge')->first();
@@ -41,7 +41,6 @@ class ExchangeController extends Controller
 
     public function exchangeInsert(Request $request)
     {
-        // dd($request->all());
 
         $request->validate([
             'amount' => 'required|numeric|gt:0',
@@ -57,7 +56,7 @@ class ExchangeController extends Controller
             $gate->where('status', 1);
             
         })->where('method_code', $request->method_code)->where('currency', $request->currency)->first();
-        // dd($gate);
+        
         if (!$gate) {
             $notify[] = ['error', 'Invalid deposit gateway'];
             return back()->withNotify($notify);
@@ -103,9 +102,6 @@ class ExchangeController extends Controller
         $data->save();
 
 
-        // return to_route(strtolower(userGuard()['type']) . 'currency.exchange.deposit.confirm');
-
-        // Withdrawal process
         $withdrawMethod = WithdrawMethod::where('id', $request->withdraw_method_id)->where('status', 1)->first();
         if (!$withdrawMethod) {
             $notify[] = ['error', 'Invalid withdrawal method'];
@@ -135,10 +131,14 @@ class ExchangeController extends Controller
         $withdraw->status = 0;
         $withdraw->save();
 
-        // dd($withdraw, $data);
         session()->put('Track', $data->trx);
         session()->put('wtrx', $withdraw->trx);
-        return to_route(strtolower(userGuard()['type']) . '.currency.exchange.manual.confirm');
+
+        if($gate->method_code >= 1000){
+            return to_route(strtolower(userGuard()['type']) . '.currency.exchange.manual.confirm');
+        }
+
+        return to_route(strtolower(userGuard()['type']) . '.deposit.confirm');
     }
 
 
@@ -262,27 +262,7 @@ class ExchangeController extends Controller
         }
     }
 
-    public function manualDepositConfirmolddd()
-    {
-        $track = session()->get('Track');
-        $data = Deposit::with('gateway')->where('status', 0)->where('trx', $track)->first();
-        $withdraw = Withdrawal::with('method', 'user')->where('trx', session()->get('wtrx'))->where('status', 0)->orderBy('id', 'desc')->firstOrFail();
-        // dd($data, $withdraw);
-        return view($this->activeTemplate . 'user.currency_exchange.preview', compact('pageTitle', 'withdraw'));
-
-        if (!$data) {
-            return to_route(gatewayRedirectUrl());
-        }
-
-        if ($data->method_code > 999) {
-            $pageTitle = 'Deposit Confirm';
-            $method = $data->gatewayCurrency();
-            $gateway = $method->method;
-            return view($this->activeTemplate . gatewayView('manual_confirm', true), compact('data', 'pageTitle', 'method', 'gateway'));
-        }
-
-        abort(404);
-    }
+    
     public function manualDepositConfirm()
     {
         $track = session()->get('Track');
@@ -306,7 +286,6 @@ class ExchangeController extends Controller
     public function manualDepositUpdate(Request $request)
     {
 
-        // dd($request->all());
         $track = session()->get('Track');
         $data = Deposit::with('gateway')->where('status', 0)->where('trx', $track)->first();
         $withdraw = Withdrawal::with('method', 'user')->where('trx', session()->get('wtrx'))->where('status', 0)->orderBy('id', 'desc')->first();
@@ -314,13 +293,6 @@ class ExchangeController extends Controller
         $withdraw->save();
         $userType = 'USER';
         $user = User::find($data->user_id);
-        // if ($data->user_type == 'USER') {
-        //     $user = User::find($data->user_id);
-        //     $userType = 'USER';
-        // } elseif ($data->user_type == 'AGENT') {
-        //     $user = Agent::find($data->user_id);
-        //     $userType = 'AGENT';
-        // }
 
         if (!$data) {
             return to_route(gatewayRedirectUrl());
