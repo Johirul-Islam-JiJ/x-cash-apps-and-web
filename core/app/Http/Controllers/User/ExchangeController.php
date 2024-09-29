@@ -103,8 +103,15 @@ class ExchangeController extends Controller
 
 
         $withdrawMethod = WithdrawMethod::where('id', $request->withdraw_method_id)->where('status', 1)->first();
+        $userMethod = UserWithdrawMethod::myWithdrawMethod()->where('method_id', $withdrawMethod->id)->first();
+
         if (!$withdrawMethod) {
             $notify[] = ['error', 'Invalid withdrawal method'];
+            return back()->withNotify($notify);
+        }
+
+        if (!$userMethod) {
+            $notify[] = ['error', 'your withdrawal method information is not selected yet! Please add your withdraw method information'];
             return back()->withNotify($notify);
         }
 
@@ -127,6 +134,7 @@ class ExchangeController extends Controller
         $withdraw->charge = $withdrawCharge;
         $withdraw->final_amount = $withdrawPayable;
         $withdraw->after_charge = $withdrawPayable;
+        $withdraw->withdraw_information = $userMethod->user_data;
         $withdraw->trx = getTrx();
         $withdraw->status = 0;
         $withdraw->save();
